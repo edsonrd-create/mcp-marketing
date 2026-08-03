@@ -139,9 +139,14 @@ GOOGLE_ADS_LIVE_AUTH=1 npm run start:google
 - [docs/QUICKSTART.md](docs/QUICKSTART.md)
 - [docs/CLI.md](docs/CLI.md)
 - [docs/CONFIGURATION.md](docs/CONFIGURATION.md)
+- [docs/INSTALL.md](docs/INSTALL.md)
+- [docs/API.md](docs/API.md)
 - [docs/GOOGLE_ADS.md](docs/GOOGLE_ADS.md)
+- [docs/META_ADS.md](docs/META_ADS.md)
+- [docs/WHATSAPP.md](docs/WHATSAPP.md)
 - [docs/CORE_FRAMEWORK.md](docs/CORE_FRAMEWORK.md)
 - [docs/DOCKER.md](docs/DOCKER.md)
+- [PRODUCTION_READINESS_REPORT.md](PRODUCTION_READINESS_REPORT.md)
 
 ## Licença
 
