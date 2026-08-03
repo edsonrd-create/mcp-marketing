@@ -49,12 +49,9 @@ function buildToolPlan(pkg) {
       { name: "enable_campaign", arguments: { campaign_id: "1001" } },
       { name: "update_budget", arguments: { campaign_id: "1001", budget_micros: 2_000_000 } },
       { name: "search_keywords", arguments: { query: "marketing automation", limit: 5 } },
-      { name: "generate_ads", arguments: { product: "Marketing Brain", tone: "professional", count: 2 } },
       { name: "campaign_report", arguments: { date_range: "LAST_30_DAYS" } },
-      {
-        name: "negative_keywords",
-        arguments: { campaign_id: "1001", keywords: ["free", "cheap"] },
-      },
+      { name: "list_customers", arguments: {} },
+      { name: "account_info", arguments: {} },
     ],
     "@mcp-marketing/meta-ads": () => [
       { name: "list_campaigns", arguments: {} },

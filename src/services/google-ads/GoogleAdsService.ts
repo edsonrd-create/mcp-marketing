@@ -9,7 +9,8 @@ export interface GoogleAdsServiceOptions {
 }
 
 /**
- * Google Ads service shell — keeps Google Ads API wiring ready without changing MCP packages.
+ * HTTP-shell Google Ads status service (Sprint 1).
+ * Full MCP provider: `src/providers/google-ads`.
  */
 export class GoogleAdsService {
   private readonly config: ConfigService;
@@ -29,13 +30,12 @@ export class GoogleAdsService {
       return {
         name: "google-ads",
         status: "degraded",
-        details: "Credentials incomplete — MCP package still available with skip-auth for smoke",
+        details: "Credentials incomplete — set .env and GOOGLE_ADS_LIVE_AUTH=1 for live MCP",
       };
     }
     return { name: "google-ads", status: "ok", details: "Credentials present" };
   }
 
-  /** Lightweight readiness check — does not call the live Ads API on boot. */
   async ping(): Promise<{ ok: boolean }> {
     if (!this.isConfigured()) {
       this.logger.warn("Google Ads ping skipped — missing credentials");

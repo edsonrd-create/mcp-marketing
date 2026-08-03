@@ -1,1 +1,5 @@
-export { GoogleAdsService, createGoogleAdsService } from "./GoogleAdsService.js";
+export {
+  GoogleAdsService,
+  createGoogleAdsService,
+  type GoogleAdsServiceOptions,
+} from "./GoogleAdsService.js";

@@ -54,6 +54,8 @@ npm start
 | `npm run lint` | ESLint |
 | `npm test` | Testes dos workspaces |
 | `npm run doctor` | Diagnóstico do ambiente |
+| `npm run test:google` | Testes do provider Google Ads (10/10 tools) |
+| `npm run validate:google` | Validação do provider Google Ads |
 | `npm run mcp:smoke` | Smoke MCP stdio (52 tools) |
 | `npm run mcp:tools` | Chamadas de teste + `MCP_TOOLS_REPORT.md` |
 
@@ -66,6 +68,8 @@ src/                         # Shell HTTP / base da aplicação
 ├── config/                  # ConfigService, EnvValidator
 ├── core/                    # bootstrap, Fastify app
 ├── logger/                  # LoggerFactory (Pino)
+├── providers/
+│   └── google-ads/          # Provider MCP completo (Sprint 2)
 ├── routes/                  # health, ready
 ├── services/
 │   ├── google-ads/

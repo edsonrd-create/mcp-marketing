@@ -1,78 +1,63 @@
-import { beforeEach, describe, expect, it } from "vitest";
-import { GoogleAdsService } from "./google-ads.service.js";
+import { describe, expect, it, beforeAll } from "vitest";
+import { createGoogleAdsModule, type GoogleAdsModule } from "../../../src/providers/google-ads/index.js";
 
-describe("GoogleAdsService", () => {
-  let service: GoogleAdsService;
+describe("GoogleAdsProvider (package suite)", () => {
+  let module: GoogleAdsModule;
 
-  beforeEach(() => {
-    service = new GoogleAdsService({ customerId: "1234567890" });
+  beforeAll(async () => {
+    module = await createGoogleAdsModule({
+      GOOGLE_ADS_CLIENT_ID: "id",
+      GOOGLE_ADS_CLIENT_SECRET: "secret",
+      GOOGLE_ADS_REFRESH_TOKEN: "refresh",
+      GOOGLE_ADS_DEVELOPER_TOKEN: "dev",
+      GOOGLE_ADS_CUSTOMER_ID: "1112223333",
+      GOOGLE_ADS_SKIP_AUTH_VALIDATE: true,
+      GOOGLE_ADS_LIVE_AUTH: false,
+      GOOGLE_ADS_FORCE_MOCK: true,
+    });
   });
 
   it("lists seeded campaigns", async () => {
-    const campaigns = await service.listCampaigns();
+    const campaigns = await module.provider.listCampaigns();
     expect(campaigns.length).toBeGreaterThanOrEqual(2);
   });
 
-  it("creates and retrieves a campaign", async () => {
-    const created = await service.createCampaign({
-      name: "Test Campaign",
-      budgetMicros: 10_000_000,
+  it("creates and gets a campaign", async () => {
+    const created = await module.provider.createCampaign({
+      name: "Package Test",
+      budgetMicros: 3_000_000,
+      channelType: "SEARCH",
     });
-
-    expect(created.name).toBe("Test Campaign");
-    expect(created.status).toBe("ENABLED");
-
-    const fetched = await service.getCampaign(created.id);
-    expect(fetched.id).toBe(created.id);
+    const fetched = await module.provider.getCampaign(created.id);
+    expect(fetched.name).toBe("Package Test");
   });
 
-  it("pauses and enables a campaign", async () => {
-    const created = await service.createCampaign({
-      name: "Toggle Campaign",
-      budgetMicros: 5_000_000,
-    });
-
-    const paused = await service.pauseCampaign(created.id);
-    expect(paused.status).toBe("PAUSED");
-
-    const enabled = await service.enableCampaign(created.id);
-    expect(enabled.status).toBe("ENABLED");
+  it("pauses and enables campaigns", async () => {
+    await module.provider.pauseCampaign("1001");
+    expect((await module.provider.getCampaign("1001")).status).toBe("PAUSED");
+    await module.provider.enableCampaign("1001");
+    expect((await module.provider.getCampaign("1001")).status).toBe("ENABLED");
   });
 
   it("updates budget", async () => {
-    const created = await service.createCampaign({
-      name: "Budget Campaign",
-      budgetMicros: 5_000_000,
-    });
-
-    const updated = await service.updateBudget(created.id, 20_000_000);
-    expect(updated.budgetMicros).toBe(20_000_000);
+    const campaign = await module.provider.updateBudget("1001", 4_000_000);
+    expect(campaign.budgetMicros).toBe(4_000_000);
   });
 
   it("searches keywords", async () => {
-    const keywords = await service.searchKeywords("shoes", 3);
-    expect(keywords).toHaveLength(3);
-    expect(keywords[0]?.keyword).toContain("shoes");
-  });
-
-  it("generates ads", async () => {
-    const ads = await service.generateAds({ product: "Sneakers", count: 2 });
-    expect(ads).toHaveLength(2);
-    expect(ads[0]?.headline).toContain("Sneakers");
+    const keywords = await module.provider.searchKeywords("ads", 4);
+    expect(keywords).toHaveLength(4);
   });
 
   it("returns campaign report rows", async () => {
-    const rows = await service.campaignReport();
-    expect(rows.length).toBeGreaterThan(0);
+    const rows = await module.provider.campaignReport({ dateRange: "LAST_30_DAYS" });
     expect(rows[0]?.impressions).toBeGreaterThan(0);
   });
 
-  it("adds negative keywords", async () => {
-    const campaigns = await service.listCampaigns();
-    const campaignId = campaigns[0]?.id;
-    expect(campaignId).toBeTruthy();
-
-    const result = await service.negativeKeywords(campaignId!, ["free", "cheap"]);
-    expect(result.added).toEqual(["free", "cheap"]);
+  it("lists customers and account info", async () => {
+    const customers = await module.provider.listCustomers();
+    const account = await module.provider.accountInfo();
+    expect(customers[0]?.id).toBe("1112223333");
+    expect(account.customerId).toBe("1112223333");
   });
 });

@@ -32,6 +32,8 @@
     "typecheck": "npm run typecheck --workspaces --if-present && tsc -p tsconfig.app.json --noEmit",
     "lint": "eslint . --ext .ts",
     "test": "npm run test --workspaces --if-present",
+    "test:google": "vitest run --config vitest.google.config.ts && npm run test -w @mcp-marketing/google-ads",
+    "validate:google": "tsx scripts/validate-google.mjs",
     "doctor": "node scripts/doctor.mjs",
     "validate": "node scripts/system-validation.mjs",
     "status": "node scripts/status.mjs",
@@ -79,6 +81,7 @@
     "eslint-config-prettier": "^10.1.1",
     "prettier": "^3.5.3",
     "tsx": "^4.19.3",
-    "typescript": "^5.8.2"
+    "typescript": "^5.8.2",
+    "vitest": "^3.2.7"
   }
 }

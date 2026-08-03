@@ -19,6 +19,8 @@ export function buildSmokeEnv(extra = {}) {
     GOOGLE_ADS_DEVELOPER_TOKEN: "smoke-developer-token",
     GOOGLE_ADS_CUSTOMER_ID: "1234567890",
     GOOGLE_ADS_SKIP_AUTH_VALIDATE: "true",
+    GOOGLE_ADS_FORCE_MOCK: "true",
+    GOOGLE_ADS_LIVE_AUTH: "0",
     META_ACCESS_TOKEN: "smoke-meta-token",
     META_AD_ACCOUNT_ID: "act_smoke_123",
     META_SKIP_AUTH_VALIDATE: "true",

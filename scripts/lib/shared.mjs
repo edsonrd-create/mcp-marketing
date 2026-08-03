@@ -33,10 +33,10 @@ export const EXPECTED_TOOLS = {
     "pause_campaign",
     "enable_campaign",
     "update_budget",
-    "search_keywords",
-    "generate_ads",
     "campaign_report",
-    "negative_keywords",
+    "search_keywords",
+    "list_customers",
+    "account_info",
   ],
   "@mcp-marketing/meta-ads": [
     "list_campaigns",

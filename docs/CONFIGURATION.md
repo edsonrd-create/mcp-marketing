@@ -40,7 +40,12 @@ npm run dev
 | `GOOGLE_ADS_REFRESH_TOKEN` | for Google Ads | OAuth refresh token |
 | `GOOGLE_ADS_DEVELOPER_TOKEN` | for Google Ads | Ads API developer token |
 | `GOOGLE_ADS_CUSTOMER_ID` | for Google Ads | Ads customer ID |
+| `GOOGLE_ADS_LOGIN_CUSTOMER_ID` | no | MCC login customer id |
 | `GOOGLE_ADS_SKIP_AUTH_VALIDATE` | no | `true` for smoke tests |
+| `GOOGLE_ADS_LIVE_AUTH` | no | `1` for live OAuth + API |
+| `GOOGLE_ADS_FORCE_MOCK` | no | `true` to force mock data layer |
+
+See [GOOGLE_ADS.md](GOOGLE_ADS.md) for the full provider guide.
 
 ### Meta Ads
 
