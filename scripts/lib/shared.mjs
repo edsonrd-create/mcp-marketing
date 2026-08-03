@@ -192,10 +192,18 @@ export function countTestFiles(dir = ROOT) {
 }
 
 export function findToolSourceFile(workspaceDir) {
+  /** Prefer provider register modules when MCP packages only re-export tools. */
+  const providerRegister = {
+    "mcp-google-ads": join(ROOT, "src/providers/google-ads/tools/register.ts"),
+    "mcp-meta-ads": join(ROOT, "src/providers/meta-ads/tools/register.ts"),
+  };
+
   const candidates = [
+    providerRegister[workspaceDir],
     join(ROOT, workspaceDir, "src", "tools", "index.ts"),
     join(ROOT, workspaceDir, "dist", "tools", "index.js"),
-  ];
+  ].filter(Boolean);
+
   return candidates.find((p) => existsSync(p)) ?? null;
 }
 
@@ -209,6 +217,18 @@ export function countToolsInSource(filePath) {
     const nameMatch = match.match(/"([^"]+)"/);
     if (nameMatch) {
       names.add(nameMatch[1]);
+    }
+  }
+
+  // Fallback: exported TOOL_NAMES arrays (e.g. GOOGLE_ADS_TOOL_NAMES)
+  if (names.size === 0) {
+    const arrayMatch = content.match(
+      /(?:export\s+const\s+\w*TOOL_NAMES\s*=\s*)\[([\s\S]*?)\]\s*as\s+const/,
+    );
+    if (arrayMatch) {
+      for (const nameMatch of arrayMatch[1].matchAll(/"([^"]+)"/g)) {
+        names.add(nameMatch[1]);
+      }
     }
   }
 
