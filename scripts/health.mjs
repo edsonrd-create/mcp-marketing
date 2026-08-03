@@ -1,55 +1,26 @@
 #!/usr/bin/env node
-import { FrameworkBootstrap } from "../src/core/server/Bootstrap.ts";
+import { HealthService } from "../src/services/health/HealthService.ts";
 
-function label(status) {
-  if (status === "online") return "Online";
-  if (status === "offline") return "Offline";
-  return "Configuração inválida";
-}
-
-const framework = await FrameworkBootstrap.create({
-  rootDir: process.cwd(),
-  prettyLogs: false,
-  logLevel: "silent",
-});
-await framework.initialize();
-const report = await framework.healthReport();
+const health = new HealthService({ rootDir: process.cwd() });
+const rows = await health.list();
+const fw = await health.getFramework();
 
 console.log("Marketing Brain Health");
 console.log("======================");
-console.log(`Version: ${report.version}`);
-console.log(`Generated: ${report.generatedAt}`);
+console.log(`Generated: ${new Date().toISOString()}`);
 console.log("");
 
-const rows = [
-  ...report.providers.map((p) => ({
-    name: p.name,
-    status: p.status,
-    details: p.details ?? "",
-  })),
-  {
-    name: report.openai.name,
-    status: report.openai.status,
-    details: report.openai.details ?? "",
-  },
-  {
-    name: report.mcpServer.name,
-    status: report.mcpServer.status,
-    details: report.mcpServer.details ?? "",
-  },
-];
-
 for (const row of rows) {
-  const mark =
-    row.status === "online" ? "✓" : row.status === "offline" ? "✗" : "!";
-  console.log(`${mark} ${row.name.padEnd(14)} ${label(row.status).padEnd(22)} ${row.details}`);
+  const mark = row.status === "online" ? "✓" : row.status === "offline" ? "✗" : "!";
+  const details = row.details ?? "";
+  console.log(`${mark} ${row.name.padEnd(14)} ${row.label.padEnd(22)} ${details}`);
 }
 
 console.log("");
 console.log(
-  `Framework registry: ${framework.providerRegistry.size} providers, ${framework.toolRegistry.size} tools`,
+  `Framework registry: ${fw.providerRegistry.size} providers, ${fw.toolRegistry.size} tools`,
 );
 
 const failed = rows.some((r) => r.status === "offline");
-await framework.shutdown();
+await health.shutdown();
 process.exit(failed ? 1 : 0);
