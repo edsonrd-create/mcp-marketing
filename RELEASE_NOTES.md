@@ -39,6 +39,10 @@ npm run build:info
 npm run package:release
 ```
 
+Artifacts: `BUILD_INFO.json`, `RELEASE_MANIFEST.json`, `dist-release/marketing-brain-1.1.0-lts.tar.gz`.
+
+See `LTS_CERTIFICATION.md` for the Long Term Support sign-off.
+
 Produces `dist-release/marketing-brain-1.1.0-lts/` and tarball.
 
 ## Support

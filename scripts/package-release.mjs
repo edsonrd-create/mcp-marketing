@@ -16,10 +16,14 @@ const rootFiles = [
   "RELEASE_NOTES.md",
   "LICENSE",
   "NOTICE",
+  "THIRD_PARTY_LICENSES.md",
+  "LTS_CERTIFICATION.md",
   "README.md",
+  "SECURITY.md",
+  "SUPPORT.md",
 ];
 
-const rootDirs = ["config", "docs"];
+const rootDirs = ["config", "docs", "docker"];
 
 function ensureBuildInfo() {
   if (!existsSync(join(ROOT, "BUILD_INFO.json")) || !existsSync(join(ROOT, "RELEASE_MANIFEST.json"))) {
@@ -50,6 +54,22 @@ for (const file of rootFiles) {
 for (const dir of rootDirs) {
   copyIfExists(join(ROOT, dir), join(releaseDir, dir));
 }
+
+// CLI "binaries" (Node entrypoints) + installer
+mkdirSync(join(releaseDir, "bin"), { recursive: true });
+copyIfExists(
+  join(ROOT, "packages/cli/bin/marketing-brain.js"),
+  join(releaseDir, "bin/marketing-brain.js"),
+);
+copyIfExists(
+  join(ROOT, "packages/create-marketing-brain/bin/create-marketing-brain.js"),
+  join(releaseDir, "bin/create-marketing-brain.js"),
+);
+copyIfExists(join(ROOT, "packages/cli"), join(releaseDir, "packages/cli"));
+copyIfExists(
+  join(ROOT, "packages/create-marketing-brain"),
+  join(releaseDir, "packages/create-marketing-brain"),
+);
 
 const manifestPath = join(releaseDir, "RELEASE_MANIFEST.json");
 if (existsSync(manifestPath)) {

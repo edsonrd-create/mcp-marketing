@@ -158,8 +158,10 @@ export function checkNodeVersion() {
 }
 
 export function countTestFiles(dir = ROOT) {
-  let count = 0;
+  let files = 0;
+  let cases = 0;
   const skip = new Set(["node_modules", ".git", "dist", "dist-release"]);
+  const caseRe = /\b(?:it|test)\s*\(/g;
 
   function walk(current) {
     let entries;
@@ -176,14 +178,17 @@ export function countTestFiles(dir = ROOT) {
       const fullPath = join(current, entry.name);
       if (entry.isDirectory()) {
         walk(fullPath);
-      } else if (entry.isFile() && entry.name.endsWith(".test.ts")) {
-        count += 1;
+      } else if (entry.isFile() && (entry.name.endsWith(".test.ts") || entry.name.endsWith(".spec.ts"))) {
+        files += 1;
+        const content = readFileSync(fullPath, "utf8");
+        const matches = content.match(caseRe);
+        cases += matches?.length ?? 0;
       }
     }
   }
 
   walk(dir);
-  return count;
+  return cases > 0 ? cases : files;
 }
 
 export function findToolSourceFile(workspaceDir) {
