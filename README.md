@@ -111,11 +111,26 @@ Template: [docs/mcp-config.example.json](docs/mcp-config.example.json)
 | AI Agent | `@mcp-marketing/ai-agent` | 7 |
 | Workflows | `@mcp-marketing/workflows` | 13 |
 
+## Google Ads (provider completo)
+
+Guia: [docs/GOOGLE_ADS.md](docs/GOOGLE_ADS.md)
+
+```bash
+# mock / CI
+npm run test:google
+npm run validate:google
+
+# conta real (sem alterar código)
+# preencha GOOGLE_ADS_* no .env e:
+GOOGLE_ADS_LIVE_AUTH=1 npm run start:google
+```
+
 ## Documentação
 
 - [docs/QUICKSTART.md](docs/QUICKSTART.md)
 - [docs/CLI.md](docs/CLI.md)
 - [docs/CONFIGURATION.md](docs/CONFIGURATION.md)
+- [docs/GOOGLE_ADS.md](docs/GOOGLE_ADS.md)
 - [docs/DOCKER.md](docs/DOCKER.md)
 
 ## Licença
