@@ -54,14 +54,20 @@ function buildToolPlan(pkg) {
       { name: "account_info", arguments: {} },
     ],
     "@mcp-marketing/meta-ads": () => [
+      { name: "list_accounts", arguments: {} },
       { name: "list_campaigns", arguments: {} },
+      { name: "get_campaign", arguments: { campaign_id: "2001" } },
       {
         name: "create_campaign",
         arguments: { name: "Meta Smoke", objective: "OUTCOME_TRAFFIC", daily_budget: 50 },
       },
       { name: "pause_campaign", arguments: { campaign_id: "2001" } },
+      { name: "enable_campaign", arguments: { campaign_id: "2001" } },
       { name: "resume_campaign", arguments: { campaign_id: "2001" } },
       { name: "update_budget", arguments: { campaign_id: "2001", daily_budget: 80 } },
+      { name: "get_insights", arguments: { campaign_id: "2001" } },
+      { name: "list_audiences", arguments: {} },
+      { name: "account_info", arguments: {} },
       {
         name: "create_audience",
         arguments: { name: "Smoke Audience", subtype: "CUSTOM", approximate_count: 1000 },

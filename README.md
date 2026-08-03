@@ -58,7 +58,9 @@ npm start
 | `npm run doctor` | Diagnóstico (Node, npm, .env, deps, providers, build) |
 | `npm run test:google` | Testes do provider Google Ads (10/10 tools) |
 | `npm run validate:google` | Validação do provider Google Ads |
-| `npm run mcp:smoke` | Smoke MCP stdio (52 tools) |
+| `npm run test:meta` | Testes do provider Meta Ads |
+| `npm run validate:meta` | Validação do provider Meta Ads |
+| `npm run mcp:smoke` | Smoke MCP stdio |
 | `npm run mcp:tools` | Chamadas de teste + `MCP_TOOLS_REPORT.md` |
 
 Scripts por servidor MCP mantidos: `dev:google`, `start:meta`, etc.
@@ -88,7 +90,7 @@ src/
 └── index.ts
 
 shared/                      # libs compartilhadas (erros, logger, MCP helpers)
-mcp-*/                       # servidores MCP (stdio) — 52 tools
+mcp-*/                       # servidores MCP (stdio)
 packages/cli/                # CLI marketing-brain
 docs/                        # documentação
 ```
@@ -105,16 +107,18 @@ Arquitetura MCP stdio **não muda**: os pacotes `mcp-*` continuam sendo os servi
 
 Template: [docs/mcp-config.example.json](docs/mcp-config.example.json)
 
-## MCP Servers (52 tools)
+## MCP Servers (58 tools)
 
 | Servidor | Pacote | Tools |
 |----------|--------|------:|
 | Google Ads | `@mcp-marketing/google-ads` | 10 |
-| Meta Ads | `@mcp-marketing/meta-ads` | 8 |
+| Meta Ads | `@mcp-marketing/meta-ads` | 14 |
 | WhatsApp | `@mcp-marketing/whatsapp` | 6 |
 | Insights | `@mcp-marketing/insights` | 8 |
 | AI Agent | `@mcp-marketing/ai-agent` | 7 |
 | Workflows | `@mcp-marketing/workflows` | 13 |
+
+Guia Meta: [docs/META_ADS.md](docs/META_ADS.md)
 
 ## Google Ads (provider completo)
 

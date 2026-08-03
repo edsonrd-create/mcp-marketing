@@ -11,7 +11,7 @@ export const MIN_NODE_MAJOR = 22;
 
 export const MCP_WORKSPACES = [
   { dir: "mcp-google-ads", name: "@mcp-marketing/google-ads", expectedTools: 10 },
-  { dir: "mcp-meta-ads", name: "@mcp-marketing/meta-ads", expectedTools: 8 },
+  { dir: "mcp-meta-ads", name: "@mcp-marketing/meta-ads", expectedTools: 14 },
   { dir: "mcp-whatsapp", name: "@mcp-marketing/whatsapp", expectedTools: 6 },
   { dir: "mcp-insights", name: "@mcp-marketing/insights", expectedTools: 8 },
   { dir: "mcp-ai-agent", name: "@mcp-marketing/ai-agent", expectedTools: 7 },
@@ -39,11 +39,17 @@ export const EXPECTED_TOOLS = {
     "account_info",
   ],
   "@mcp-marketing/meta-ads": [
+    "list_accounts",
     "list_campaigns",
+    "get_campaign",
     "create_campaign",
     "pause_campaign",
-    "resume_campaign",
+    "enable_campaign",
     "update_budget",
+    "get_insights",
+    "list_audiences",
+    "account_info",
+    "resume_campaign",
     "create_audience",
     "create_ad",
     "get_metrics",
@@ -192,10 +198,15 @@ export function countTestFiles(dir = ROOT) {
 }
 
 export function findToolSourceFile(workspaceDir) {
+  const providerRegister = {
+    "mcp-google-ads": join(ROOT, "src/providers/google-ads/tools/register.ts"),
+    "mcp-meta-ads": join(ROOT, "src/providers/meta-ads/tools/register.ts"),
+  };
   const candidates = [
+    providerRegister[workspaceDir],
     join(ROOT, workspaceDir, "src", "tools", "index.ts"),
     join(ROOT, workspaceDir, "dist", "tools", "index.js"),
-  ];
+  ].filter(Boolean);
   return candidates.find((p) => existsSync(p)) ?? null;
 }
 

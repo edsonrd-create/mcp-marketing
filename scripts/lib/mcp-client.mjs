@@ -24,6 +24,7 @@ export function buildSmokeEnv(extra = {}) {
     META_ACCESS_TOKEN: "smoke-meta-token",
     META_AD_ACCOUNT_ID: "act_smoke_123",
     META_SKIP_AUTH_VALIDATE: "true",
+    META_FORCE_MOCK: "true",
     WHATSAPP_TOKEN: "smoke-whatsapp-token",
     WHATSAPP_PHONE_NUMBER_ID: "smoke-phone-id",
     WHATSAPP_API_VERSION: "v21.0",
