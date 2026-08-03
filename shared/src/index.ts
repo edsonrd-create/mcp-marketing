@@ -21,6 +21,7 @@ export {
   type TextToolResult,
   type ToolHandler,
 } from "./mcp/tool-result.js";
+export { registerTool, type ToolConfig, type ToolHandlerResult } from "./mcp/registerTool.js";
 export {
   createDatabase,
   MemoryDatabase,
