@@ -12,6 +12,20 @@ describe("WhatsApp services", () => {
     });
     expect(result.status).toBe("sent");
     expect(result.to).toBe("+5511999999999");
+
+    const status = await service.getMessageStatus(result.messageId);
+    expect(status?.messageId).toBe(result.messageId);
+
+    const templates = await service.listTemplates();
+    expect(templates.length).toBeGreaterThan(0);
+
+    const webhook = await service.validateWebhook({
+      mode: "subscribe",
+      verifyToken: "marketing-brain",
+      challenge: "42",
+    });
+    expect(webhook.ok).toBe(true);
+    expect(webhook.challenge).toBe("42");
   });
 
   it("scheduler persists scheduled messages via createDatabase memory", async () => {

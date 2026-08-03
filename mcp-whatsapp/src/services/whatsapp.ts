@@ -10,22 +10,64 @@ export interface SendMessageInput {
 export interface SendMessageResult {
   messageId: string;
   to: string;
-  status: "sent" | "queued" | "scheduled";
+  status: "sent" | "queued" | "scheduled" | "delivered" | "failed";
   body: string;
   sentAt: string;
 }
 
+export interface WhatsAppTemplate {
+  name: string;
+  language: string;
+  status: "APPROVED" | "PENDING" | "REJECTED";
+  category: string;
+}
+
+export interface WebhookValidationInput {
+  mode?: string;
+  verifyToken: string;
+  challenge?: string;
+}
+
 export interface WhatsAppService {
   sendMessage(input: SendMessageInput): Promise<SendMessageResult>;
+  listTemplates(): Promise<WhatsAppTemplate[]>;
+  getMessageStatus(messageId: string): Promise<SendMessageResult | null>;
+  validateWebhook(input: WebhookValidationInput): Promise<{
+    ok: boolean;
+    challenge?: string;
+    reason?: string;
+  }>;
 }
 
 export interface WhatsAppServiceOptions {
   env: WhatsAppEnv;
   fetchImpl?: typeof fetch;
+  verifyToken?: string;
+}
+
+const DEFAULT_TEMPLATES: WhatsAppTemplate[] = [
+  { name: "hello_world", language: "en_US", status: "APPROVED", category: "UTILITY" },
+  { name: "birthday_offer", language: "pt_BR", status: "APPROVED", category: "MARKETING" },
+  { name: "order_confirm", language: "pt_BR", status: "APPROVED", category: "UTILITY" },
+];
+
+function createMessageStore() {
+  const messages = new Map<string, SendMessageResult>();
+  return {
+    save(result: SendMessageResult): SendMessageResult {
+      messages.set(result.messageId, result);
+      return result;
+    },
+    get(messageId: string): SendMessageResult | null {
+      return messages.get(messageId) ?? null;
+    },
+  };
 }
 
 export function createWhatsAppService(options: WhatsAppServiceOptions): WhatsAppService {
   const { env, fetchImpl = fetch } = options;
+  const store = createMessageStore();
+  const verifyToken = options.verifyToken ?? process.env.WHATSAPP_VERIFY_TOKEN ?? "marketing-brain";
 
   return {
     async sendMessage(input: SendMessageInput): Promise<SendMessageResult> {
@@ -76,28 +118,67 @@ export function createWhatsAppService(options: WhatsAppServiceOptions): WhatsApp
       const data = (await response.json()) as { messages?: Array<{ id: string }> };
       const messageId = data.messages?.[0]?.id ?? `wa_${Date.now()}`;
 
-      return {
+      return store.save({
         messageId,
         to: input.to,
         status: "sent",
         body: input.body,
         sentAt: new Date().toISOString(),
-      };
+      });
+    },
+
+    async listTemplates(): Promise<WhatsAppTemplate[]> {
+      return [...DEFAULT_TEMPLATES];
+    },
+
+    async getMessageStatus(messageId: string): Promise<SendMessageResult | null> {
+      return store.get(messageId);
+    },
+
+    async validateWebhook(input: WebhookValidationInput) {
+      if (input.verifyToken !== verifyToken) {
+        return { ok: false, reason: "verify token mismatch" };
+      }
+      if (input.mode === "subscribe" && input.challenge) {
+        return { ok: true, challenge: input.challenge };
+      }
+      return { ok: true };
     },
   };
 }
 
 /** Stub service for tests — no network calls. */
-export function createStubWhatsAppService(): WhatsAppService {
+export function createStubWhatsAppService(options?: { verifyToken?: string }): WhatsAppService {
+  const store = createMessageStore();
+  const verifyToken = options?.verifyToken ?? "marketing-brain";
+
   return {
     async sendMessage(input: SendMessageInput): Promise<SendMessageResult> {
-      return {
+      return store.save({
         messageId: `stub_${Date.now()}`,
         to: input.to,
         status: "sent",
         body: input.body,
         sentAt: new Date().toISOString(),
-      };
+      });
+    },
+
+    async listTemplates(): Promise<WhatsAppTemplate[]> {
+      return [...DEFAULT_TEMPLATES];
+    },
+
+    async getMessageStatus(messageId: string): Promise<SendMessageResult | null> {
+      return store.get(messageId);
+    },
+
+    async validateWebhook(input: WebhookValidationInput) {
+      if (input.verifyToken !== verifyToken) {
+        return { ok: false, reason: "verify token mismatch" };
+      }
+      if (input.mode === "subscribe" && input.challenge) {
+        return { ok: true, challenge: input.challenge };
+      }
+      return { ok: true };
     },
   };
 }

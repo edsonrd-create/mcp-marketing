@@ -43,12 +43,16 @@ export class ConversationMemory {
       .filter((m) => m.role === "user")
       .map((m) => m.content.slice(0, 80));
 
-    return {
+    const lastMessageAt = messages.at(-1)?.timestamp;
+    const summary: ConversationSummary = {
       sessionId,
       messageCount: messages.length,
-      lastMessageAt: messages.at(-1)?.timestamp,
       topics: userTopics.slice(-5),
     };
+    if (lastMessageAt !== undefined) {
+      summary.lastMessageAt = lastMessageAt;
+    }
+    return summary;
   }
 
   listSessions(store: AgentStore): ConversationSummary[] {
