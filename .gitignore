@@ -1,5 +1,6 @@
 node_modules/
 dist/
+dist-release/
 build/
 coverage/
 .env
@@ -13,6 +14,7 @@ release/
 *.db
 .DS_Store
 *.log
+logs/*.log
 .turbo/
 .vitest/
 *.tsbuildinfo
