@@ -107,18 +107,18 @@ Arquitetura MCP stdio **não muda**: os pacotes `mcp-*` continuam sendo os servi
 
 Template: [docs/mcp-config.example.json](docs/mcp-config.example.json)
 
-## MCP Servers (58 tools)
+## MCP Servers (71 tools)
 
 | Servidor | Pacote | Tools |
 |----------|--------|------:|
 | Google Ads | `@mcp-marketing/google-ads` | 10 |
 | Meta Ads | `@mcp-marketing/meta-ads` | 14 |
-| WhatsApp | `@mcp-marketing/whatsapp` | 6 |
+| WhatsApp | `@mcp-marketing/whatsapp` | 10 |
 | Insights | `@mcp-marketing/insights` | 8 |
-| AI Agent | `@mcp-marketing/ai-agent` | 7 |
-| Workflows | `@mcp-marketing/workflows` | 13 |
+| AI Agent | `@mcp-marketing/ai-agent` | 14 |
+| Workflows | `@mcp-marketing/workflows` | 15 |
 
-Guia Meta: [docs/META_ADS.md](docs/META_ADS.md)
+Guias: [GOOGLE_ADS.md](docs/GOOGLE_ADS.md) · [META_ADS.md](docs/META_ADS.md) · [WHATSAPP.md](docs/WHATSAPP.md)
 
 ## Google Ads (provider completo)
 

@@ -25,7 +25,7 @@ describe("FrameworkBootstrap", () => {
     await boot.initialize();
     expect(boot.isReady()).toBe(true);
     expect(boot.providerRegistry.size).toBe(6);
-    expect(boot.toolRegistry.size).toBe(58);
+    expect(boot.toolRegistry.size).toBe(71);
     expect(boot.toolRegistry.list("google-ads").map((t) => t.name)).toContain("list_campaigns");
     expect(boot.toolRegistry.list("meta-ads").map((t) => t.name)).toContain("get_insights");
     expect(boot.toolRegistry.list("whatsapp").map((t) => t.name)).toContain("send_template");
@@ -33,7 +33,7 @@ describe("FrameworkBootstrap", () => {
     const report = await boot.healthReport();
     expect(report.providers.find((p) => p.id === "google-ads")?.status).toBe("online");
     expect(report.openai.status).toBe("online");
-    expect(report.mcpServer.tools).toBe(58);
+    expect(report.mcpServer.tools).toBe(71);
 
     await boot.shutdown();
     expect(boot.isReady()).toBe(false);

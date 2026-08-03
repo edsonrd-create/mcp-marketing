@@ -107,6 +107,17 @@ export function pauseWorkflow(store: WorkflowsStore, workflowId: string): Workfl
   return updateWorkflow(store, workflowId, { status: "paused" });
 }
 
+export function resumeWorkflow(store: WorkflowsStore, workflowId: string): Workflow {
+  const workflow = store.workflows.find((w) => w.id === workflowId);
+  if (!workflow) {
+    throw new Error(`Workflow not found: ${workflowId}`);
+  }
+  if (workflow.status !== "paused") {
+    throw new Error(`Workflow ${workflowId} is not paused (status: ${workflow.status})`);
+  }
+  return updateWorkflow(store, workflowId, { status: "active" });
+}
+
 export function deleteWorkflow(store: WorkflowsStore, workflowId: string): boolean {
   const index = store.workflows.findIndex((w) => w.id === workflowId);
   if (index === -1) {

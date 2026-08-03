@@ -12,10 +12,10 @@ export const MIN_NODE_MAJOR = 22;
 export const MCP_WORKSPACES = [
   { dir: "mcp-google-ads", name: "@mcp-marketing/google-ads", expectedTools: 10 },
   { dir: "mcp-meta-ads", name: "@mcp-marketing/meta-ads", expectedTools: 14 },
-  { dir: "mcp-whatsapp", name: "@mcp-marketing/whatsapp", expectedTools: 6 },
+  { dir: "mcp-whatsapp", name: "@mcp-marketing/whatsapp", expectedTools: 10 },
   { dir: "mcp-insights", name: "@mcp-marketing/insights", expectedTools: 8 },
-  { dir: "mcp-ai-agent", name: "@mcp-marketing/ai-agent", expectedTools: 7 },
-  { dir: "mcp-workflows", name: "@mcp-marketing/workflows", expectedTools: 13 },
+  { dir: "mcp-ai-agent", name: "@mcp-marketing/ai-agent", expectedTools: 14 },
+  { dir: "mcp-workflows", name: "@mcp-marketing/workflows", expectedTools: 15 },
 ];
 
 export const ALL_WORKSPACES = [
@@ -56,11 +56,15 @@ export const EXPECTED_TOOLS = {
   ],
   "@mcp-marketing/whatsapp": [
     "send_birthday_message",
+    "send_birthday",
     "send_coupon",
     "send_campaign",
     "send_template",
     "schedule_message",
     "order_confirmation",
+    "list_templates",
+    "get_message_status",
+    "validate_webhook",
   ],
   "@mcp-marketing/insights": [
     "analyze_insights",
@@ -80,6 +84,13 @@ export const EXPECTED_TOOLS = {
     "get_agent_history",
     "get_ai_summary",
     "list_audit_logs",
+    "analyze_campaigns",
+    "optimize_budget",
+    "generate_report",
+    "analyze_customers",
+    "suggest_actions",
+    "summarize_account",
+    "marketing_chat",
   ],
   "@mcp-marketing/workflows": [
     "list_workflows",
@@ -89,6 +100,8 @@ export const EXPECTED_TOOLS = {
     "pause_workflow",
     "delete_workflow",
     "run_workflow",
+    "execute_workflow",
+    "resume_workflow",
     "run_due_workflows",
     "recover_workflow_execution",
     "list_workflow_templates",

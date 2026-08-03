@@ -88,6 +88,10 @@ function buildToolPlan(pkg) {
         arguments: { to: "+5511999999999", name: "Smoke User", couponCode: "SMOKE10" },
       },
       {
+        name: "send_birthday",
+        arguments: { to: "+5511999999999", name: "Smoke User", couponCode: "SMOKE10" },
+      },
+      {
         name: "send_coupon",
         arguments: { to: "+5511999999999", couponCode: "SAVE20", discount: "20% OFF" },
       },
@@ -124,6 +128,16 @@ function buildToolPlan(pkg) {
           items: ["Item A"],
         },
       },
+      { name: "list_templates", arguments: {} },
+      { name: "get_message_status", arguments: { messageId: "stub_missing" } },
+      {
+        name: "validate_webhook",
+        arguments: {
+          mode: "subscribe",
+          verifyToken: "marketing-brain",
+          challenge: "12345",
+        },
+      },
     ],
     "@mcp-marketing/insights": () => [
       {
@@ -156,6 +170,16 @@ function buildToolPlan(pkg) {
       { name: "get_agent_history", arguments: { sessionId: "smoke-session", limit: 20 } },
       { name: "get_ai_summary", arguments: {} },
       { name: "list_audit_logs", arguments: { limit: 20 } },
+      { name: "analyze_campaigns", arguments: {} },
+      { name: "optimize_budget", arguments: { totalBudget: 10000 } },
+      { name: "generate_report", arguments: {} },
+      { name: "analyze_customers", arguments: {} },
+      { name: "suggest_actions", arguments: { limit: 5 } },
+      { name: "summarize_account", arguments: {} },
+      {
+        name: "marketing_chat",
+        arguments: { message: "What is my account ROAS?", sessionId: "smoke-marketing" },
+      },
       // confirm/cancel filled dynamically after pending list
     ],
     "@mcp-marketing/workflows": () => [
@@ -264,7 +288,7 @@ for (const target of targets) {
               }
             }
           }
-          if (call.name === "run_workflow") {
+          if (call.name === "run_workflow" || call.name === "execute_workflow") {
             const parsed = parseJsonFromResult(result);
             if (parsed?.execution?.id) {
               ctx.executionId = parsed.execution.id;
@@ -356,7 +380,9 @@ for (const target of targets) {
           },
           { name: "duplicate_workflow", arguments: { workflowId } },
           { name: "run_workflow", arguments: { workflowId } },
+          { name: "execute_workflow", arguments: { workflowId } },
           { name: "pause_workflow", arguments: { workflowId } },
+          { name: "resume_workflow", arguments: { workflowId } },
           {
             name: "recover_workflow_execution",
             arguments: { executionId: "nonexistent-execution" },
