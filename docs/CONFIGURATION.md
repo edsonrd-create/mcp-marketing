@@ -29,6 +29,7 @@ Copy `.env.example` to `.env`.
 |----------|----------|-------------|
 | `WHATSAPP_TOKEN` | yes | Cloud API token |
 | `WHATSAPP_PHONE_NUMBER_ID` | yes | Phone number ID |
+| `WHATSAPP_STUB` | no | `true` to skip Graph API (local MCP smoke/tools) |
 
 ### Database
 
@@ -50,5 +51,9 @@ Profiles in `config/`:
 
 ## Script flags
 
-- `SKIP_DOTENV_FILE=1` — skip loading `.env` in scripts
-- `GOOGLE_ADS_SKIP_AUTH_VALIDATE=1` — smoke without OAuth
+- `SKIP_DOTENV_FILE=true` — skip loading `.env` in scripts / MCP harness
+- `GOOGLE_ADS_SKIP_AUTH_VALIDATE=true` — smoke without OAuth
+- `META_SKIP_AUTH_VALIDATE=true` — smoke without Meta live validation
+- `WHATSAPP_STUB=true` — WhatsApp tools without live Graph calls
+
+MCP client guides: [cursor.md](cursor.md), [claude.md](claude.md), [chatgpt.md](chatgpt.md), [mcp-config.example.json](mcp-config.example.json).
