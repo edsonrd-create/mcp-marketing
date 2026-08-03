@@ -1,3 +1,4 @@
+import { ExternalApiError } from "@mcp-marketing/shared";
 import type { WhatsAppEnv } from "../config/env.js";
 
 export interface SendMessageInput {
@@ -64,10 +65,17 @@ function createMessageStore() {
   };
 }
 
+function sanitizeApiErrorBody(body: string): string {
+  return body
+    .slice(0, 240)
+    .replace(/(access_token|token|authorization)=([^&\s"']+)/gi, "$1=[redacted]")
+    .replace(/"access_token"\s*:\s*"[^"]*"/gi, '"access_token":"[redacted]"');
+}
+
 export function createWhatsAppService(options: WhatsAppServiceOptions): WhatsAppService {
   const { env, fetchImpl = fetch } = options;
   const store = createMessageStore();
-  const verifyToken = options.verifyToken ?? process.env.WHATSAPP_VERIFY_TOKEN ?? "marketing-brain";
+  const verifyToken = options.verifyToken ?? process.env.WHATSAPP_VERIFY_TOKEN;
 
   return {
     async sendMessage(input: SendMessageInput): Promise<SendMessageResult> {
@@ -111,8 +119,12 @@ export function createWhatsAppService(options: WhatsAppServiceOptions): WhatsApp
       });
 
       if (!response.ok) {
-        const detail = await response.text();
-        throw new Error(`WhatsApp API error (${response.status}): ${detail}`);
+        const detail = sanitizeApiErrorBody(await response.text());
+        throw new ExternalApiError(
+          "whatsapp",
+          `WhatsApp API error (${response.status}): ${detail}`,
+          { status: response.status },
+        );
       }
 
       const data = (await response.json()) as { messages?: Array<{ id: string }> };
@@ -136,6 +148,9 @@ export function createWhatsAppService(options: WhatsAppServiceOptions): WhatsApp
     },
 
     async validateWebhook(input: WebhookValidationInput) {
+      if (!verifyToken) {
+        return { ok: false, reason: "WHATSAPP_VERIFY_TOKEN not configured" };
+      }
       if (input.verifyToken !== verifyToken) {
         return { ok: false, reason: "verify token mismatch" };
       }
@@ -150,7 +165,7 @@ export function createWhatsAppService(options: WhatsAppServiceOptions): WhatsApp
 /** Stub service for tests — no network calls. */
 export function createStubWhatsAppService(options?: { verifyToken?: string }): WhatsAppService {
   const store = createMessageStore();
-  const verifyToken = options?.verifyToken ?? "marketing-brain";
+  const verifyToken = options?.verifyToken ?? process.env.WHATSAPP_VERIFY_TOKEN ?? "test-verify-token";
 
   return {
     async sendMessage(input: SendMessageInput): Promise<SendMessageResult> {

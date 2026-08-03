@@ -6,6 +6,8 @@ Stack: Node.js · TypeScript · MCP SDK · Fastify · Google Ads API · OpenAI �
 
 ## Instalação
 
+Guia completo: [INSTALL.md](INSTALL.md) · [docs/INSTALL.md](docs/INSTALL.md)
+
 ```bash
 npm install
 cp .env.example .env   # preencha credenciais conforme necessário
@@ -17,6 +19,8 @@ npm run build
 Variáveis em `.env` — validadas automaticamente por `EnvValidator` / `ConfigService`.
 
 Detalhes: [docs/CONFIGURATION.md](docs/CONFIGURATION.md)
+
+Credenciais de providers vazias → shell HTTP sobe com avisos; MCP packages exigem as próprias vars. Live Google: `GOOGLE_ADS_LIVE_AUTH=1`. WhatsApp offline: `WHATSAPP_STUB=true`.
 
 ```bash
 npm run doctor
@@ -70,23 +74,16 @@ Scripts por servidor MCP mantidos: `dev:google`, `start:meta`, etc.
 ```text
 src/
 ├── config/                  # ConfigService, EnvValidator
-├── core/                    # Core MCP Framework (Sprint 4)
+├── core/                    # Core MCP Framework
 │   ├── server/              # ToolRegistry, ProviderRegistry, Bootstrap
 │   ├── auth/ tools/ providers/ logging/
 │   └── http/                # Fastify shell
 ├── logger/                  # LoggerFactory (Pino)
 ├── providers/
-│   └── google-ads/          # Provider MCP completo (Sprint 2)
+│   ├── google-ads/          # Provider Google Ads (10 tools)
+│   └── meta-ads/            # Provider Meta Ads (14 tools)
 ├── routes/                  # health, ready
-├── services/
-│   ├── google-ads/
-│   ├── openai/
-│   └── mcp/
-├── tools/
-├── schemas/
-├── scripts/
-├── utils/
-├── types/
+├── services/                # health, OpenAI, MCP status
 └── index.ts
 
 shared/                      # libs compartilhadas (erros, logger, MCP helpers)
@@ -146,6 +143,7 @@ GOOGLE_ADS_LIVE_AUTH=1 npm run start:google
 - [docs/WHATSAPP.md](docs/WHATSAPP.md)
 - [docs/CORE_FRAMEWORK.md](docs/CORE_FRAMEWORK.md)
 - [docs/DOCKER.md](docs/DOCKER.md)
+- [PRODUCTION_FINAL_REPORT.md](PRODUCTION_FINAL_REPORT.md)
 - [PRODUCTION_READINESS_REPORT.md](PRODUCTION_READINESS_REPORT.md)
 
 ## Licença

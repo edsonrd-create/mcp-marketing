@@ -48,6 +48,10 @@ npm run start:workflows
 
 Client guides: [cursor.md](cursor.md), [claude.md](claude.md), [mcp-config.example.json](mcp-config.example.json).
 
+## Missing credentials
+
+Empty values after `cp .env.example .env` are expected until live credentials are supplied. `npm run doctor` lists exactly which provider keys are missing. Root quickstart: [../INSTALL.md](../INSTALL.md).
+
 ## Production checklist
 
-See [PRODUCTION_READINESS_REPORT.md](../PRODUCTION_READINESS_REPORT.md).
+See [PRODUCTION_FINAL_REPORT.md](../PRODUCTION_FINAL_REPORT.md) and [PRODUCTION_READINESS_REPORT.md](../PRODUCTION_READINESS_REPORT.md).

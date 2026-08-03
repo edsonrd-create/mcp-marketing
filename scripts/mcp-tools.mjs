@@ -134,7 +134,7 @@ function buildToolPlan(pkg) {
         name: "validate_webhook",
         arguments: {
           mode: "subscribe",
-          verifyToken: "marketing-brain",
+          verifyToken: "test-verify-token",
           challenge: "12345",
         },
       },

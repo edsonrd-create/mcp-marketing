@@ -29,6 +29,7 @@ export function buildSmokeEnv(extra = {}) {
     WHATSAPP_PHONE_NUMBER_ID: "smoke-phone-id",
     WHATSAPP_API_VERSION: "v21.0",
     WHATSAPP_STUB: "true",
+    WHATSAPP_VERIFY_TOKEN: "test-verify-token",
     ...extra,
   };
 

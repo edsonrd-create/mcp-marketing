@@ -21,7 +21,7 @@ describe("WhatsApp services", () => {
 
     const webhook = await service.validateWebhook({
       mode: "subscribe",
-      verifyToken: "marketing-brain",
+      verifyToken: "test-verify-token",
       challenge: "42",
     });
     expect(webhook.ok).toBe(true);

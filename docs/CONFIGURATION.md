@@ -53,6 +53,8 @@ See [GOOGLE_ADS.md](GOOGLE_ADS.md) for the full provider guide.
 |----------|----------|-------------|
 | `META_ACCESS_TOKEN` | for Meta Ads MCP | Graph API access token |
 | `META_AD_ACCOUNT_ID` | for Meta Ads MCP | Ad account ID (`act_...`) |
+| `META_APP_ID` | no | Meta app id (optional Graph helpers) |
+| `META_APP_SECRET` | no | Meta app secret (optional Graph helpers) |
 | `META_SKIP_AUTH_VALIDATE` | no | `true` for smoke tests |
 
 ### WhatsApp
@@ -61,11 +63,17 @@ See [GOOGLE_ADS.md](GOOGLE_ADS.md) for the full provider guide.
 |----------|----------|-------------|
 | `WHATSAPP_TOKEN` | for WhatsApp MCP | Cloud API token |
 | `WHATSAPP_PHONE_NUMBER_ID` | for WhatsApp MCP | Phone number ID |
+| `WHATSAPP_API_VERSION` | no | Default `v21.0` |
 | `WHATSAPP_STUB` | no | `true` to skip Graph API (local MCP smoke/tools) |
+| `WHATSAPP_VERIFY_TOKEN` | for live webhook validation | Must match Meta webhook verify token |
 
 ### Optional Firebase
 
-`FIREBASE_PROJECT_ID`, `FIREBASE_CLIENT_EMAIL`, `FIREBASE_PRIVATE_KEY`
+`FIREBASE_PROJECT_ID`, `FIREBASE_CLIENT_EMAIL`, `FIREBASE_PRIVATE_KEY` — documentadas para persistência futura; **ainda não são lidas pelo runtime** nesta versão.
+
+### Database
+
+`DATABASE_MODE` aceita `memory` \| `sqlite` \| `postgres` no schema Zod. **Implementado hoje:** apenas `memory`. `sqlite`/`postgres` são pendências operacionais (não contornar com mocks fictícios em produção).
 
 ## Validation behaviour
 

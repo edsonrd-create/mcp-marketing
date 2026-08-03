@@ -1,6 +1,11 @@
 # Changelog
 
-## [1.1.0] - 2026-08-03 — LTS + Master Prompt v2.0
+## [1.1.0] - 2026-08-03 — LTS + Master Prompt v2.0 + Sprint Final Go Live
+
+### Fixed
+- Shared build: `tsc --build --force` evita `dist/` ausente com `tsbuildinfo` stale
+- WhatsApp: remove default hardcoded de verify token no path live; erros Graph sanitizados (`ExternalApiError`)
+- Documentação alinhada a 71 tools, Meta provider e pendências de DB/Firebase
 
 ### Added
 - Marketing Brain CLI (`marketing-brain`) with doctor, start, validate, live, status, update, version

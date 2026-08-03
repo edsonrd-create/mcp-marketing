@@ -46,6 +46,12 @@ See `LTS_CERTIFICATION.md` for the Long Term Support sign-off.
 
 Produces `dist-release/marketing-brain-1.1.0-lts/` and tarball.
 
+## Sprint Final (Go Live)
+
+Homologação local (mock/stub + CI): build, lint, typecheck, testes, validate **71/71**, mcp:smoke **71/71**, mcp:tools (todas as tools), Google/Meta validate.
+
+Live Ads/Graph/WhatsApp Cloud exigem credenciais reais no `.env` — ver pendências operacionais em `PRODUCTION_FINAL_REPORT.md`.
+
 ## Support
 
-See `docs/QUICKSTART.md` and `docs/CONFIGURATION.md` for setup.
+See `INSTALL.md`, `docs/QUICKSTART.md` and `docs/CONFIGURATION.md` for setup.
