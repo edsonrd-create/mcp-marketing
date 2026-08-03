@@ -1,10 +1,31 @@
-# Docker (brief)
+# Docker — Marketing Brain v1.1 LTS
 
-Marketing Brain v1.1 LTS does not ship a production Dockerfile in this release. Recommended approach:
+Imagens e compose oficiais estão na raiz do repositório.
 
-## Local development
+## Artefatos
 
-Use Node 22+ directly:
+| Arquivo | Função |
+|---------|--------|
+| `Dockerfile` | Build multi-stage (Node 22) + HEALTHCHECK |
+| `docker-compose.yml` | Serviço com volumes e healthcheck |
+| `docker/healthcheck.sh` | Script de saúde (VERSION + dist) |
+| `docker/README.md` | Guia detalhado de uso |
+
+## Comandos
+
+```bash
+docker build -t marketing-brain:1.1.0-lts .
+docker run --rm marketing-brain:1.1.0-lts
+docker compose up
+```
+
+Monte `.env` em runtime — nunca embuta segredos na imagem:
+
+```bash
+docker run --rm --env-file .env marketing-brain:1.1.0-lts
+```
+
+## Desenvolvimento local (sem Docker)
 
 ```bash
 npm install
@@ -12,22 +33,15 @@ npm run build
 npm run start:google
 ```
 
-## Container outline
-
-1. Base image: `node:22-bookworm-slim`
-2. Copy monorepo, run `npm ci && npm run build`
-3. Mount `.env` at runtime (never bake secrets into images)
-4. Expose MCP stdio transport via your orchestrator (Cursor, Claude Desktop, etc.)
-
-## Health checks
+## Health checks (host)
 
 ```bash
 npm run validate
 npm run mcp:smoke
-marketing-brain doctor
+npm run marketing-brain -- doctor
 ```
 
-For LTS distribution packaging without Docker, use:
+## Pacote de release (sem container)
 
 ```bash
 npm run package:release

@@ -12,7 +12,7 @@ Este diretório contém os artefatos de containerização da plataforma Marketin
 Na raiz do repositório:
 
 ```bash
-docker build -t marketing-brain:1.1-lts .
+docker build -t marketing-brain:1.1.0-lts .
 ```
 
 ## Executar com Docker
@@ -21,7 +21,7 @@ docker build -t marketing-brain:1.1-lts .
 docker run --rm -it \
   -v "$(pwd)/logs:/app/logs" \
   -v "$(pwd)/config:/app/config" \
-  marketing-brain:1.1-lts
+  marketing-brain:1.1.0-lts
 ```
 
 Para verificar a saúde do container:

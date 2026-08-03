@@ -36,6 +36,8 @@
     "workflows:run": "node scripts/workflows-run.mjs",
     "build:info": "node scripts/build-info.mjs",
     "package:release": "node scripts/package-release.mjs",
+    "compat:init": "node scripts/compat-init.mjs",
+    "certify:lts": "npm run build && npm run typecheck && npm run test && npm run lint && npm run validate && npm run mcp:smoke && npm run compat:init && npm run build:info && npm run package:release",
     "marketing-brain": "node packages/cli/bin/marketing-brain.js",
     "create-marketing-brain": "node packages/create-marketing-brain/bin/create-marketing-brain.js",
     "dev:google": "npm run dev -w @mcp-marketing/google-ads",

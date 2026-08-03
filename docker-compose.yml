@@ -3,7 +3,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: marketing-brain:1.1-lts
+    image: marketing-brain:1.1.0-lts
     container_name: marketing-brain
     restart: unless-stopped
     stdin_open: true
