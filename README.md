@@ -2,24 +2,101 @@
 
 Plataforma MCP instalável para marketing digital: **Google Ads**, **Meta Ads**, **WhatsApp**, **Insights**, **AI Agent** e **Workflows**.
 
-Installable MCP platform for digital marketing automation.
+Stack: Node.js · TypeScript · MCP SDK · Fastify · Google Ads API · OpenAI · Pino · Zod
 
-## Requisitos / Requirements
-
-- Node.js **>= 22**
-- npm workspaces (monorepo)
-
-## Início rápido / Quick start
+## Instalação
 
 ```bash
 npm install
-cp .env.example .env   # preencha credenciais / fill credentials
+cp .env.example .env   # preencha credenciais conforme necessário
 npm run build
-marketing-brain doctor
-marketing-brain start
 ```
 
-## MCP Servers (52 ferramentas / tools)
+## Configuração
+
+Variáveis em `.env` — validadas automaticamente por `EnvValidator` / `ConfigService`.
+
+Detalhes: [docs/CONFIGURATION.md](docs/CONFIGURATION.md)
+
+```bash
+npm run doctor
+```
+
+## Desenvolvimento
+
+Sobe o shell HTTP (Fastify) com logs estruturados (Pino):
+
+```bash
+npm run dev
+```
+
+Endpoints:
+
+- `GET /` — info
+- `GET /health` — status dos serviços
+- `GET /ready` — readiness (MCP dist)
+
+Produção / build local:
+
+```bash
+npm run build
+npm start
+```
+
+## Scripts
+
+| Script | Descrição |
+|--------|-----------|
+| `npm run build` | Shared + MCP packages + app (`src/`) |
+| `npm run dev` | Fastify em watch (`tsx`) |
+| `npm start` | App compilada (`dist-app/`) |
+| `npm run typecheck` | TypeScript (workspaces + app) |
+| `npm run lint` | ESLint |
+| `npm test` | Testes dos workspaces |
+| `npm run doctor` | Diagnóstico do ambiente |
+| `npm run mcp:smoke` | Smoke MCP stdio (52 tools) |
+| `npm run mcp:tools` | Chamadas de teste + `MCP_TOOLS_REPORT.md` |
+
+Scripts por servidor MCP mantidos: `dev:google`, `start:meta`, etc.
+
+## Estrutura do projeto
+
+```text
+src/                         # Shell HTTP / base da aplicação
+├── config/                  # ConfigService, EnvValidator
+├── core/                    # bootstrap, Fastify app
+├── logger/                  # LoggerFactory (Pino)
+├── routes/                  # health, ready
+├── services/
+│   ├── google-ads/
+│   ├── openai/
+│   └── mcp/
+├── tools/
+├── schemas/
+├── scripts/
+├── utils/
+├── types/
+└── index.ts
+
+shared/                      # libs compartilhadas (erros, logger, MCP helpers)
+mcp-*/                       # servidores MCP (stdio) — 52 tools
+packages/cli/                # CLI marketing-brain
+docs/                        # documentação
+```
+
+Arquitetura MCP stdio **não muda**: os pacotes `mcp-*` continuam sendo os servidores de tools.
+
+## Integração MCP (clientes)
+
+| Cliente | Guia |
+|---------|------|
+| Cursor | [docs/cursor.md](docs/cursor.md) |
+| Claude Desktop | [docs/claude.md](docs/claude.md) |
+| ChatGPT Desktop | [docs/chatgpt.md](docs/chatgpt.md) |
+
+Template: [docs/mcp-config.example.json](docs/mcp-config.example.json)
+
+## MCP Servers (52 tools)
 
 | Servidor | Pacote | Tools |
 |----------|--------|------:|
@@ -30,71 +107,12 @@ marketing-brain start
 | AI Agent | `@mcp-marketing/ai-agent` | 7 |
 | Workflows | `@mcp-marketing/workflows` | 13 |
 
-## Integração com clientes MCP
-
-Documentação por cliente (stdio, sem credenciais reais nos exemplos):
-
-| Cliente | Guia |
-|---------|------|
-| Cursor | [docs/cursor.md](docs/cursor.md) |
-| Claude Desktop | [docs/claude.md](docs/claude.md) |
-| ChatGPT Desktop | [docs/chatgpt.md](docs/chatgpt.md) (quando suportado) |
-
-Template completo: [docs/mcp-config.example.json](docs/mcp-config.example.json)
-
-### Cursor
-
-1. `npm install && npm run build`
-2. Em **Settings → MCP**, adicione os servidores do exemplo em `docs/cursor.md` (substitua `ROOT` pelo caminho absoluto do monorepo).
-3. Recarregue os servidores MCP e confira as **52 tools**.
-
-### Claude Desktop
-
-1. Edite `claude_desktop_config.json` conforme [docs/claude.md](docs/claude.md).
-2. Feche e reabra o Claude Desktop.
-3. Verifique o painel de tools / MCP.
-
-### Validação local (sem cliente GUI)
-
-```bash
-npm run build
-npm run mcp:smoke    # inicia os 6 servidores via stdio, confirma 52 tools, registra tempos, encerra
-npm run mcp:tools    # chama cada tool e gera MCP_TOOLS_REPORT.md
-```
-
-Relatório: [MCP_TOOLS_REPORT.md](MCP_TOOLS_REPORT.md)
-
-## Scripts principais
-
-```bash
-npm run build           # compila workspaces
-npm run test            # testes
-npm run validate        # validação estrutural
-npm run mcp:smoke       # smoke MCP (stdio client)
-npm run mcp:tools       # chamada de teste por tool + relatório
-npm run live:validate   # validação live (.env)
-npm run build:info      # BUILD_INFO.json
-npm run package:release # tarball LTS
-```
-
-## CLI
-
-```bash
-marketing-brain doctor
-marketing-brain status
-marketing-brain validate
-create-marketing-brain ./meu-projeto
-```
-
 ## Documentação
 
 - [docs/QUICKSTART.md](docs/QUICKSTART.md)
 - [docs/CLI.md](docs/CLI.md)
 - [docs/CONFIGURATION.md](docs/CONFIGURATION.md)
 - [docs/DOCKER.md](docs/DOCKER.md)
-- [docs/cursor.md](docs/cursor.md)
-- [docs/claude.md](docs/claude.md)
-- [docs/chatgpt.md](docs/chatgpt.md)
 
 ## Licença
 
