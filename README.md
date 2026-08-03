@@ -52,8 +52,10 @@ npm start
 | `npm start` | App compilada (`dist-app/`) |
 | `npm run typecheck` | TypeScript (workspaces + app) |
 | `npm run lint` | ESLint |
-| `npm test` | Testes dos workspaces |
-| `npm run doctor` | Diagnóstico do ambiente |
+| `npm test` | Testes dos workspaces + core framework |
+| `npm run test:core` | Testes do Core MCP Framework |
+| `npm run health` | Health check (providers + OpenAI + MCP) |
+| `npm run doctor` | Diagnóstico (Node, npm, .env, deps, providers, build) |
 | `npm run test:google` | Testes do provider Google Ads (10/10 tools) |
 | `npm run validate:google` | Validação do provider Google Ads |
 | `npm run mcp:smoke` | Smoke MCP stdio (52 tools) |
@@ -64,9 +66,12 @@ Scripts por servidor MCP mantidos: `dev:google`, `start:meta`, etc.
 ## Estrutura do projeto
 
 ```text
-src/                         # Shell HTTP / base da aplicação
+src/
 ├── config/                  # ConfigService, EnvValidator
-├── core/                    # bootstrap, Fastify app
+├── core/                    # Core MCP Framework (Sprint 4)
+│   ├── server/              # ToolRegistry, ProviderRegistry, Bootstrap
+│   ├── auth/ tools/ providers/ logging/
+│   └── http/                # Fastify shell
 ├── logger/                  # LoggerFactory (Pino)
 ├── providers/
 │   └── google-ads/          # Provider MCP completo (Sprint 2)
@@ -131,6 +136,7 @@ GOOGLE_ADS_LIVE_AUTH=1 npm run start:google
 - [docs/CLI.md](docs/CLI.md)
 - [docs/CONFIGURATION.md](docs/CONFIGURATION.md)
 - [docs/GOOGLE_ADS.md](docs/GOOGLE_ADS.md)
+- [docs/CORE_FRAMEWORK.md](docs/CORE_FRAMEWORK.md)
 - [docs/DOCKER.md](docs/DOCKER.md)
 
 ## Licença
