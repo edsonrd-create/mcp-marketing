@@ -1,60 +1,66 @@
-process.env.SKIP_DOTENV_FILE = "1";
-process.env.GOOGLE_ADS_SKIP_AUTH_VALIDATE = "1";
-process.env.META_SKIP_AUTH_VALIDATE = "true";
-
-import { existsSync } from "node:fs";
-import {
-  EXPECTED_TOOLS,
-  MCP_WORKSPACES,
-  countToolsInSource,
-  findToolSourceFile,
-  getExpectedToolsCount,
-} from "./lib/shared.mjs";
+#!/usr/bin/env node
+/**
+ * MCP Smoke Test — starts each MCP server over stdio, lists tools, records init time, shuts down.
+ */
+import { EXPECTED_TOOLS, getExpectedToolsCount } from "./lib/shared.mjs";
+import { listMcpServerTargets, withMcpClient } from "./lib/mcp-client.mjs";
 
 let failed = false;
 
 function report(name, ok, detail) {
-  const status = ok ? "PASS" : "FAIL";
-  console.log(`${status} ${name}${detail ? ` — ${detail}` : ""}`);
+  console.log(`${ok ? "PASS" : "FAIL"} ${name}${detail ? ` — ${detail}` : ""}`);
   if (!ok) {
     failed = true;
   }
 }
 
-console.log("MCP Smoke Test (structure only, no live credentials)");
-console.log("====================================================");
+console.log("MCP Smoke Test (stdio client)");
+console.log("=============================");
 
-let totalFound = 0;
+const targets = listMcpServerTargets();
+let totalTools = 0;
+const timings = [];
 
-for (const ws of MCP_WORKSPACES) {
-  const expected = EXPECTED_TOOLS[ws.name] ?? [];
-  const sourceFile = findToolSourceFile(ws.dir);
-  const distIndex = `${ws.dir}/dist/index.js`;
-  const hasDist = existsSync(distIndex);
+for (const target of targets) {
+  const expected = EXPECTED_TOOLS[target.name] ?? [];
+  const outcome = await withMcpClient(target, async (client) => {
+    const listed = await client.listTools();
+    const names = (listed.tools ?? []).map((t) => t.name).sort();
+    return { names, count: names.length };
+  });
 
-  if (!sourceFile) {
-    report(ws.name, false, "no tool registration source found");
+  timings.push({ server: target.name, ms: outcome.ms, ok: outcome.ok });
+
+  if (!outcome.ok) {
+    report(target.name, false, `init failed in ${outcome.ms}ms: ${outcome.error}`);
     continue;
   }
 
-  const { count, names } = countToolsInSource(sourceFile);
-  totalFound += count;
-  const namesOk = expected.every((tool) => names.includes(tool));
-  const countOk = count === expected.length;
-  const ok = countOk && namesOk;
+  const { names, count } = outcome.result;
+  totalTools += count;
+  const missing = expected.filter((tool) => !names.includes(tool));
+  const unexpected = names.filter((tool) => !expected.includes(tool));
+  const ok = missing.length === 0 && unexpected.length === 0 && count === expected.length;
 
   report(
-    ws.name,
+    target.name,
     ok,
-    `${count}/${expected.length} tools${hasDist ? ", dist built" : ", dist missing"}`,
+    `init ${outcome.ms}ms, tools ${count}/${expected.length}` +
+      (missing.length ? `, missing=${missing.join(",")}` : "") +
+      (unexpected.length ? `, unexpected=${unexpected.join(",")}` : ""),
   );
 }
 
 const expectedTotal = getExpectedToolsCount();
-report("total tools", totalFound === expectedTotal, `${totalFound}/${expectedTotal}`);
+report("total tools", totalTools === expectedTotal, `${totalTools}/${expectedTotal}`);
+
+console.log("\nInit timings");
+for (const row of timings) {
+  console.log(`- ${row.server}: ${row.ms}ms (${row.ok ? "ok" : "fail"})`);
+}
 
 if (failed) {
   process.exit(1);
 }
 
-console.log("\nSmoke test passed.");
+console.log("\nSmoke test passed — all MCP servers started, 52 tools registered, processes closed.");

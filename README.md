@@ -30,13 +30,48 @@ marketing-brain start
 | AI Agent | `@mcp-marketing/ai-agent` | 7 |
 | Workflows | `@mcp-marketing/workflows` | 13 |
 
+## Integração com clientes MCP
+
+Documentação por cliente (stdio, sem credenciais reais nos exemplos):
+
+| Cliente | Guia |
+|---------|------|
+| Cursor | [docs/cursor.md](docs/cursor.md) |
+| Claude Desktop | [docs/claude.md](docs/claude.md) |
+| ChatGPT Desktop | [docs/chatgpt.md](docs/chatgpt.md) (quando suportado) |
+
+Template completo: [docs/mcp-config.example.json](docs/mcp-config.example.json)
+
+### Cursor
+
+1. `npm install && npm run build`
+2. Em **Settings → MCP**, adicione os servidores do exemplo em `docs/cursor.md` (substitua `ROOT` pelo caminho absoluto do monorepo).
+3. Recarregue os servidores MCP e confira as **52 tools**.
+
+### Claude Desktop
+
+1. Edite `claude_desktop_config.json` conforme [docs/claude.md](docs/claude.md).
+2. Feche e reabra o Claude Desktop.
+3. Verifique o painel de tools / MCP.
+
+### Validação local (sem cliente GUI)
+
+```bash
+npm run build
+npm run mcp:smoke    # inicia os 6 servidores via stdio, confirma 52 tools, registra tempos, encerra
+npm run mcp:tools    # chama cada tool e gera MCP_TOOLS_REPORT.md
+```
+
+Relatório: [MCP_TOOLS_REPORT.md](MCP_TOOLS_REPORT.md)
+
 ## Scripts principais
 
 ```bash
 npm run build           # compila workspaces
 npm run test            # testes
 npm run validate        # validação estrutural
-npm run mcp:smoke       # smoke sem credenciais
+npm run mcp:smoke       # smoke MCP (stdio client)
+npm run mcp:tools       # chamada de teste por tool + relatório
 npm run live:validate   # validação live (.env)
 npm run build:info      # BUILD_INFO.json
 npm run package:release # tarball LTS
@@ -57,6 +92,9 @@ create-marketing-brain ./meu-projeto
 - [docs/CLI.md](docs/CLI.md)
 - [docs/CONFIGURATION.md](docs/CONFIGURATION.md)
 - [docs/DOCKER.md](docs/DOCKER.md)
+- [docs/cursor.md](docs/cursor.md)
+- [docs/claude.md](docs/claude.md)
+- [docs/chatgpt.md](docs/chatgpt.md)
 
 ## Licença
 

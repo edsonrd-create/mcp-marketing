@@ -22,6 +22,5 @@ export type GoogleAdsEnv = z.infer<typeof googleAdsEnvSchema>;
 export function loadGoogleAdsEnv(): GoogleAdsEnv {
   return loadEnv({
     schema: googleAdsEnvSchema,
-    skipEnvFile: process.env.VITEST === "true" || process.env.NODE_ENV === "test",
   });
 }
