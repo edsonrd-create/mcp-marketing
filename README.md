@@ -20,10 +20,99 @@ npm run validate
 WHATSAPP_STUB=true npm run mcp:smoke
 ```
 
+## Como executar
+
+Os servidores MCP usam **`StdioServerTransport`**:
+
+- **Não abrem porta HTTP**
+- Ficam à espera de um **cliente MCP** no stdin/stdout
+- Logs de arranque vão para **stderr** (o stdout é reservado ao protocolo MCP)
+- Se o terminal “parecer parado” depois das mensagens de health, **é o comportamento esperado**
+
+```bash
+# Arranque local (Google Ads MCP em modo mock) — mostra logs e aguarda cliente
+npm run dev
+
+# Outros servidores MCP
+npm run dev:meta
+npm run dev:whatsapp
+npm run dev:insights
+npm run dev:ai-agent
+npm run dev:workflows
+
+# Shell HTTP Fastify (opcional, separado do MCP STDIO)
+npm run dev:app
+```
+
+Exemplo do que deve aparecer no terminal:
+
+```text
+🚀 Marketing Brain MCP iniciando... (mcp-google-ads)
+📦 Registrando Tools... (10)
+🧠 Registrando Prompts... (0)
+📚 Registrando Resources... (0)
+🩺 Health
+   • Nome: mcp-google-ads
+   • Versão: 1.0.0
+   • Tools: 10
+   • Prompts: 0
+   • Resources: 0
+🔌 Aguardando conexão de um cliente MCP via STDIO...
+✅ Transporte STDIO ativo — pronto para um cliente MCP.
+```
+
+### Cursor
+
+Em `.cursor/mcp.json` (ajuste `ROOT` para o caminho absoluto do repo):
+
+```json
+{
+  "mcpServers": {
+    "marketing-brain-google-ads": {
+      "command": "node",
+      "args": ["ROOT/mcp-google-ads/dist/index.js"],
+      "cwd": "ROOT",
+      "env": {
+        "GOOGLE_ADS_SKIP_AUTH_VALIDATE": "true",
+        "GOOGLE_ADS_FORCE_MOCK": "true",
+        "MCP_STDIO_SAFE": "true"
+      }
+    }
+  }
+}
+```
+
+Guia completo: [docs/cursor.md](docs/cursor.md)
+
+### Claude Desktop
+
+Em `claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "marketing-brain-google-ads": {
+      "command": "node",
+      "args": ["ROOT/mcp-google-ads/dist/index.js"],
+      "cwd": "ROOT",
+      "env": {
+        "GOOGLE_ADS_SKIP_AUTH_VALIDATE": "true",
+        "GOOGLE_ADS_FORCE_MOCK": "true",
+        "MCP_STDIO_SAFE": "true"
+      }
+    }
+  }
+}
+```
+
+Guia completo: [docs/claude.md](docs/claude.md) · template: [docs/mcp-config.example.json](docs/mcp-config.example.json)
+
 ## Scripts
 
 | Script | Descrição |
 |--------|-----------|
+| `npm run dev` | MCP Google Ads (STDIO) com logs de arranque |
+| `npm run doctor` | Diagnóstico (Node, TS, deps, .env, Google, OpenAI, MCP SDK) — sem conectar cliente |
 | `npm run build` | Shared + MCP packages + app |
 | `npm run typecheck` / `lint` / `test` | Qualidade |
 | `npm run validate` | Contagem e inventário de tools (**71**) |
@@ -31,7 +120,8 @@ WHATSAPP_STUB=true npm run mcp:smoke
 | `npm run mcp:tools` | Chamada por tool → `MCP_TOOLS_REPORT.md` |
 | `npm run test:google` / `validate:google` | Google Ads |
 | `npm run test:meta` / `validate:meta` | Meta Ads |
-| `npm run health` / `doctor` | Saúde e diagnóstico |
+| `npm run health` | Saúde dos providers |
+| `npm run dev:app` | Shell HTTP Fastify |
 
 ## MCP Servers (71 tools)
 
@@ -44,14 +134,10 @@ WHATSAPP_STUB=true npm run mcp:smoke
 | AI Agent | `@mcp-marketing/ai-agent` | 14 |
 | Workflows | `@mcp-marketing/workflows` | 15 |
 
-Clientes: [docs/cursor.md](docs/cursor.md) · [docs/claude.md](docs/claude.md) · [docs/chatgpt.md](docs/chatgpt.md)
-
 ## Produção
 
 - Status: [PROJECT_STATUS.md](PROJECT_STATUS.md)
 - Final release: [FINAL_RELEASE_REPORT.md](FINAL_RELEASE_REPORT.md)
-- Quality / Security / Tests / Summary: [QUALITY_REPORT.md](QUALITY_REPORT.md) · [SECURITY_REPORT.md](SECURITY_REPORT.md) · [TEST_REPORT.md](TEST_REPORT.md) · [PROJECT_SUMMARY.md](PROJECT_SUMMARY.md)
-- Readiness: [PRODUCTION_READINESS_REPORT.md](PRODUCTION_READINESS_REPORT.md)
 
 Live Ads/Graph exige credenciais reais no `.env` (nunca hardcoded).
 

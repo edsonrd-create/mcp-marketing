@@ -1,13 +1,15 @@
 #!/usr/bin/env node
-import { createLogger } from "@mcp-marketing/shared";
+import { connectStdioMcpServer, createStdioSafeLogger } from "@mcp-marketing/shared";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { loadWhatsAppEnv } from "./config/env.js";
 import { createStubWhatsAppService, createWhatsAppService } from "./services/whatsapp.js";
 import { registerWhatsAppTools } from "./tools/index.js";
 
+const SERVER_NAME = "mcp-marketing-whatsapp";
 const VERSION = "1.0.0";
-const logger = createLogger("mcp-whatsapp");
+
+process.env.MCP_STDIO_SAFE = "true";
+const logger = createStdioSafeLogger("mcp-whatsapp");
 
 export function createWhatsAppMcpServer(): McpServer {
   const env = loadWhatsAppEnv();
@@ -25,7 +27,7 @@ export function createWhatsAppMcpServer(): McpServer {
   }
 
   const server = new McpServer({
-    name: "mcp-marketing-whatsapp",
+    name: SERVER_NAME,
     version: VERSION,
   });
 
@@ -35,12 +37,11 @@ export function createWhatsAppMcpServer(): McpServer {
 
 async function main(): Promise<void> {
   const server = createWhatsAppMcpServer();
-  const transport = new StdioServerTransport();
-  await server.connect(transport);
-  logger.info({ version: VERSION }, "WhatsApp MCP server running on stdio");
+  await connectStdioMcpServer({ server, name: SERVER_NAME, version: VERSION });
 }
 
-const isDirectRun = process.argv[1]?.endsWith("server.js");
+const entry = process.argv[1] ?? "";
+const isDirectRun = /(?:^|[/\\])server\.(m?js|cjs|ts)$/.test(entry);
 if (isDirectRun) {
   main().catch((error) => {
     logger.error(error, "Failed to start WhatsApp MCP server");

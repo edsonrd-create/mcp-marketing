@@ -1,16 +1,16 @@
-import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import { createLogger } from "@mcp-marketing/shared";
+import { connectStdioMcpServer, createStdioSafeLogger } from "@mcp-marketing/shared";
 import {
   createMetaAdsModule,
   registerMetaAdsTools,
   type MetaAdsModule,
 } from "../../src/providers/meta-ads/index.js";
+import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 
 const SERVER_NAME = "mcp-meta-ads";
 const SERVER_VERSION = "1.0.0";
 
-const logger = createLogger(SERVER_NAME);
+process.env.MCP_STDIO_SAFE = "true";
+const logger = createStdioSafeLogger(SERVER_NAME);
 
 export interface MetaAdsServerContext {
   server: McpServer;
@@ -40,14 +40,17 @@ export async function createMetaAdsServer(): Promise<MetaAdsServerContext> {
 
 export async function startMetaAdsServer(): Promise<void> {
   const { server, module } = await createMetaAdsServer();
-  const transport = new StdioServerTransport();
-  await server.connect(transport);
   logger.info(
     {
       version: SERVER_VERSION,
       adAccountId: module.provider.getAdAccountId(),
       mode: module.provider.isLiveMode() ? "live" : "mock",
     },
-    "Meta Ads MCP server started (stdio)",
+    "Meta Ads MCP connecting (stdio)",
   );
+  await connectStdioMcpServer({
+    server,
+    name: SERVER_NAME,
+    version: SERVER_VERSION,
+  });
 }
