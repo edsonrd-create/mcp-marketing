@@ -45,6 +45,8 @@
     "status": "node scripts/status.mjs",
     "mcp:smoke": "node scripts/mcp-smoke.mjs",
     "mcp:tools": "node scripts/mcp-tools.mjs",
+    "mcp:discover": "node scripts/mcp-discover.mjs",
+    "mcp:client": "node scripts/mcp-client-validate.mjs",
     "live:validate": "node scripts/live-validation.mjs",
     "workflows:run": "node scripts/workflows-run.mjs",
     "build:info": "node scripts/build-info.mjs",

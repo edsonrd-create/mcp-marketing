@@ -1,6 +1,6 @@
 import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { structuredResult, withToolErrorHandling } from "@mcp-marketing/shared";
+import { structuredResult, withToolErrorHandling, withToolExecutionLogging } from "@mcp-marketing/shared";
 import { z } from "zod";
 import type { MetaAdsProvider } from "../services/MetaAdsProvider.js";
 import {
@@ -22,8 +22,9 @@ import {
 
 type ToolHandler = (args: Record<string, unknown>) => Promise<CallToolResult>;
 
-function toolHandler(handler: ToolHandler): ToolHandler {
-  return withToolErrorHandling(handler) as ToolHandler;
+function toolHandler(name: string, handler: ToolHandler): ToolHandler {
+  const guarded = withToolErrorHandling(handler) as ToolHandler;
+  return async (args) => withToolExecutionLogging(name, () => guarded(args));
 }
 
 /** Master Prompt v2 tools + legacy aliases for compatibility. */
@@ -52,7 +53,7 @@ export function registerMetaAdsTools(server: McpServer, provider: MetaAdsProvide
     "list_accounts",
     "List Meta ad accounts accessible with the configured token",
     listAccountsSchema.shape,
-    toolHandler(async (raw) => {
+    toolHandler("list_accounts", async (raw) => {
       listAccountsSchema.parse(raw);
       const accounts = await provider.listAccounts();
       return structuredResult({ accounts, adAccountId: provider.getAdAccountId() });
@@ -63,7 +64,7 @@ export function registerMetaAdsTools(server: McpServer, provider: MetaAdsProvide
     "list_campaigns",
     "List all Meta (Facebook/Instagram) ad campaigns",
     listCampaignsSchema.shape,
-    toolHandler(async (raw) => {
+    toolHandler("list_campaigns", async (raw) => {
       listCampaignsSchema.parse(raw);
       const campaigns = await provider.listCampaigns();
       return structuredResult({
@@ -78,7 +79,7 @@ export function registerMetaAdsTools(server: McpServer, provider: MetaAdsProvide
     "get_campaign",
     "Get a Meta ad campaign by ID",
     getCampaignSchema.shape,
-    toolHandler(async (raw) => {
+    toolHandler("get_campaign", async (raw) => {
       const { campaign_id } = getCampaignSchema.parse(raw);
       const campaign = await provider.getCampaign(campaign_id);
       return structuredResult({ campaign, adAccountId: provider.getAdAccountId() });
@@ -93,7 +94,7 @@ export function registerMetaAdsTools(server: McpServer, provider: MetaAdsProvide
       objective: z.string().min(1).describe("Campaign objective"),
       daily_budget: z.number().positive().describe("Daily budget in account currency"),
     },
-    toolHandler(async (raw) => {
+    toolHandler("create_campaign", async (raw) => {
       const input = createCampaignSchema.parse(raw);
       const campaign = await provider.createCampaign({
         name: input.name,
@@ -108,7 +109,7 @@ export function registerMetaAdsTools(server: McpServer, provider: MetaAdsProvide
     "pause_campaign",
     "Pause a Meta ad campaign",
     pauseCampaignSchema.shape,
-    toolHandler(async (raw) => {
+    toolHandler("pause_campaign", async (raw) => {
       const { campaign_id } = pauseCampaignSchema.parse(raw);
       const campaign = await provider.pauseCampaign(campaign_id);
       return structuredResult({ campaign, action: "paused", adAccountId: provider.getAdAccountId() });
@@ -119,7 +120,7 @@ export function registerMetaAdsTools(server: McpServer, provider: MetaAdsProvide
     "enable_campaign",
     "Enable a paused Meta ad campaign",
     enableCampaignSchema.shape,
-    toolHandler(async (raw) => {
+    toolHandler("enable_campaign", async (raw) => {
       const { campaign_id } = enableCampaignSchema.parse(raw);
       const campaign = await provider.enableCampaign(campaign_id);
       return structuredResult({
@@ -134,7 +135,7 @@ export function registerMetaAdsTools(server: McpServer, provider: MetaAdsProvide
     "resume_campaign",
     "Resume a paused Meta ad campaign (legacy alias of enable_campaign)",
     resumeCampaignSchema.shape,
-    toolHandler(async (raw) => {
+    toolHandler("resume_campaign", async (raw) => {
       const { campaign_id } = resumeCampaignSchema.parse(raw);
       const campaign = await provider.resumeCampaign(campaign_id);
       return structuredResult({
@@ -149,7 +150,7 @@ export function registerMetaAdsTools(server: McpServer, provider: MetaAdsProvide
     "update_budget",
     "Update the daily budget for a Meta ad campaign",
     updateBudgetSchema.shape,
-    toolHandler(async (raw) => {
+    toolHandler("update_budget", async (raw) => {
       const { campaign_id, daily_budget } = updateBudgetSchema.parse(raw);
       const campaign = await provider.updateBudget(campaign_id, daily_budget);
       return structuredResult({ campaign, adAccountId: provider.getAdAccountId() });
@@ -162,7 +163,7 @@ export function registerMetaAdsTools(server: McpServer, provider: MetaAdsProvide
     {
       campaign_id: z.string().optional().describe("Optional campaign ID filter"),
     },
-    toolHandler(async (raw) => {
+    toolHandler("get_insights", async (raw) => {
       const input = getInsightsSchema.parse(raw);
       const insightsInput =
         input.campaign_id !== undefined ? { campaignId: input.campaign_id } : undefined;
@@ -177,7 +178,7 @@ export function registerMetaAdsTools(server: McpServer, provider: MetaAdsProvide
     {
       campaign_id: z.string().optional().describe("Optional campaign ID filter"),
     },
-    toolHandler(async (raw) => {
+    toolHandler("get_metrics", async (raw) => {
       const input = getMetricsSchema.parse(raw);
       const metricsInput =
         input.campaign_id !== undefined ? { campaignId: input.campaign_id } : undefined;
@@ -190,7 +191,7 @@ export function registerMetaAdsTools(server: McpServer, provider: MetaAdsProvide
     "list_audiences",
     "List Meta custom audiences",
     listAudiencesSchema.shape,
-    toolHandler(async (raw) => {
+    toolHandler("list_audiences", async (raw) => {
       listAudiencesSchema.parse(raw);
       const audiences = await provider.listAudiences();
       return structuredResult({ audiences, adAccountId: provider.getAdAccountId() });
@@ -205,7 +206,7 @@ export function registerMetaAdsTools(server: McpServer, provider: MetaAdsProvide
       subtype: z.string().optional().describe("Audience subtype"),
       approximate_count: z.number().int().positive().optional(),
     },
-    toolHandler(async (raw) => {
+    toolHandler("create_audience", async (raw) => {
       const input = createAudienceSchema.parse(raw);
       const audienceInput: {
         name: string;
@@ -229,7 +230,7 @@ export function registerMetaAdsTools(server: McpServer, provider: MetaAdsProvide
       campaign_id: z.string().min(1),
       creative_body: z.string().min(1),
     },
-    toolHandler(async (raw) => {
+    toolHandler("create_ad", async (raw) => {
       const input = createAdSchema.parse(raw);
       const ad = await provider.createAd({
         name: input.name,
@@ -244,7 +245,7 @@ export function registerMetaAdsTools(server: McpServer, provider: MetaAdsProvide
     "account_info",
     "Get Meta ad account information",
     accountInfoSchema.shape,
-    toolHandler(async (raw) => {
+    toolHandler("account_info", async (raw) => {
       accountInfoSchema.parse(raw);
       const account = await provider.accountInfo();
       return structuredResult({ account, adAccountId: provider.getAdAccountId() });

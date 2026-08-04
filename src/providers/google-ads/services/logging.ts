@@ -19,10 +19,10 @@ export async function withGoogleAdsLogging<T>(
   } catch (error) {
     logger.error(
       {
-        err: error,
         tool,
         customerId,
         ms: Math.round(performance.now() - started),
+        errMessage: error instanceof Error ? error.message : String(error),
       },
       "Google Ads tool request failed",
     );

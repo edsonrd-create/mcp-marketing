@@ -39,6 +39,10 @@ export {
 } from "./mcp/tool-result.js";
 export { registerTool, type ToolConfig, type ToolHandlerResult } from "./mcp/registerTool.js";
 export {
+  logToolExecution,
+  withToolExecutionLogging,
+} from "./mcp/tool-logging.js";
+export {
   connectStdioMcpServer,
   formatMcpServerHealth,
   getMcpRegistrationCounts,
