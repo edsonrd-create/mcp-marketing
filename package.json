@@ -47,6 +47,8 @@
     "mcp:tools": "node scripts/mcp-tools.mjs",
     "mcp:discover": "node scripts/mcp-discover.mjs",
     "mcp:client": "node scripts/mcp-client-validate.mjs",
+    "tools:report": "node scripts/tools-report.mjs",
+    "inspect": "node scripts/mcp-inspect.mjs",
     "live:validate": "node scripts/live-validation.mjs",
     "workflows:run": "node scripts/workflows-run.mjs",
     "build:info": "node scripts/build-info.mjs",

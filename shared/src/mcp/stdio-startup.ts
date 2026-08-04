@@ -79,17 +79,33 @@ export async function connectStdioMcpServer(options: ConnectStdioMcpServerOption
   const { server, name, version } = options;
   const health = getMcpServerHealth(name, version, server);
 
-  mcpStartupLog(`🚀 Marketing Brain MCP iniciando... (${name})`);
-  mcpStartupLog(`📦 Registrando Tools... (${health.tools})`);
-  mcpStartupLog(`🧠 Registrando Prompts... (${health.prompts})`);
-  mcpStartupLog(`📚 Registrando Resources... (${health.resources})`);
+  mcpStartupLog(`Marketing Brain MCP`);
+  mcpStartupLog(`Servidor: ${name}`);
+  mcpStartupLog(`Versão: ${version}`);
+  mcpStartupLog(`Quantidade de Tools: ${health.tools}`);
+  mcpStartupLog(`Quantidade de Prompts: ${health.prompts}`);
+  mcpStartupLog(`Quantidade de Resources: ${health.resources}`);
   mcpStartupLog(formatMcpServerHealth(health));
-  mcpStartupLog(`🔌 Aguardando conexão de um cliente MCP via STDIO...`);
-  mcpStartupLog(`   (nenhuma porta HTTP — o processo fica à espera no stdin; isto é esperado)`);
+  mcpStartupLog(`Aguardando conexão via STDIO...`);
+  mcpStartupLog(`(nenhuma porta HTTP — o processo fica à espera no stdin; isto é esperado)`);
+
+  let disconnectedLogged = false;
+  const logDisconnected = () => {
+    if (disconnectedLogged) {
+      return;
+    }
+    disconnectedLogged = true;
+    mcpStartupLog(`Cliente desconectado`);
+  };
+  process.stdin.on("end", logDisconnected);
+  process.stdin.on("close", logDisconnected);
+  process.on("SIGINT", () => {
+    logDisconnected();
+  });
 
   const transport = new StdioServerTransport();
   await server.connect(transport);
 
-  mcpStartupLog(`✅ Cliente MCP conectado.`);
-  mcpStartupLog(`   Transporte STDIO ativo — JSON-RPC no stdin/stdout; logs em stderr.`);
+  mcpStartupLog(`Cliente conectado`);
+  mcpStartupLog(`Transporte STDIO ativo — JSON-RPC no stdin/stdout; logs em stderr.`);
 }

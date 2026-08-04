@@ -1,13 +1,13 @@
 # MCP Discovery Report
 
 **Product:** Marketing Brain MCP v1.0.0
-**Generated:** 2026-08-04T01:42:39.201Z
+**Generated:** 2026-08-04T02:05:02.234Z
 **Transport:** StdioServerTransport
 **Expected tools:** 71
 
 ## @mcp-marketing/google-ads
 
-**Status:** PASS (194ms)
+**Status:** PASS (201ms)
 **Tools:** 10 (expected 10)
 **Prompts:** 0
 **Resources:** 0
@@ -31,7 +31,7 @@ _Nenhum Resource registado neste servidor._
 
 ## @mcp-marketing/meta-ads
 
-**Status:** PASS (165ms)
+**Status:** PASS (162ms)
 **Tools:** 14 (expected 14)
 **Prompts:** 0
 **Resources:** 0
@@ -59,7 +59,7 @@ _Nenhum Resource registado neste servidor._
 
 ## @mcp-marketing/whatsapp
 
-**Status:** PASS (166ms)
+**Status:** PASS (161ms)
 **Tools:** 10 (expected 10)
 **Prompts:** 0
 **Resources:** 0
@@ -83,7 +83,7 @@ _Nenhum Resource registado neste servidor._
 
 ## @mcp-marketing/insights
 
-**Status:** PASS (155ms)
+**Status:** PASS (175ms)
 **Tools:** 8 (expected 8)
 **Prompts:** 0
 **Resources:** 0
@@ -105,7 +105,7 @@ _Nenhum Resource registado neste servidor._
 
 ## @mcp-marketing/ai-agent
 
-**Status:** PASS (160ms)
+**Status:** PASS (162ms)
 **Tools:** 14 (expected 14)
 **Prompts:** 0
 **Resources:** 0
@@ -133,7 +133,7 @@ _Nenhum Resource registado neste servidor._
 
 ## @mcp-marketing/workflows
 
-**Status:** PASS (157ms)
+**Status:** PASS (163ms)
 **Tools:** 15 (expected 15)
 **Prompts:** 0
 **Resources:** 0

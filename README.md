@@ -20,6 +20,8 @@ npm run mcp:client
 
 ## Como executar
 
+Ver guia completo: [CURSOR_SETUP.md](CURSOR_SETUP.md) · [CLAUDE_SETUP.md](CLAUDE_SETUP.md)
+
 Os servidores MCP usam **`StdioServerTransport`**:
 
 - **Não abrem porta HTTP**

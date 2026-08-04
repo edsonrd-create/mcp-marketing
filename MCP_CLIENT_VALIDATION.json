@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-08-04T01:42:38.977Z",
+  "generatedAt": "2026-08-04T02:05:04.563Z",
   "transport": "stdio",
   "expectedTools": 71,
   "discoveredTools": 71,
@@ -31,7 +31,7 @@
         "summary": "{ \"campaigns\": [ { \"id\": \"1001\", \"name\": \"Brand Awareness\", \"status\": \"ENABLED\", \"budgetMicros\": 50000000, \"channelType\": \"SEARCH\" }, { \"id\": \"1002\", \"name\": \"Retargeting\", \"status\": \"PAUSED\", \"budget",
         "isError": false
       },
-      "ms": 186
+      "ms": 199
     },
     {
       "server": "@mcp-marketing/meta-ads",
@@ -57,11 +57,11 @@
       "handshake": true,
       "toolCall": {
         "name": "list_campaigns",
-        "ms": 3,
+        "ms": 2,
         "summary": "{ \"campaigns\": [ { \"id\": \"2001\", \"name\": \"Meta Prospecting\", \"status\": \"ACTIVE\", \"objective\": \"OUTCOME_TRAFFIC\", \"dailyBudget\": 100 }, { \"id\": \"2002\", \"name\": \"Meta Retargeting\", \"status\": \"PAUSED\", \"",
         "isError": false
       },
-      "ms": 186
+      "ms": 159
     },
     {
       "server": "@mcp-marketing/whatsapp",
@@ -83,11 +83,11 @@
       "handshake": true,
       "toolCall": {
         "name": "list_templates",
-        "ms": 2,
+        "ms": 3,
         "summary": "{ \"tool\": \"list_templates\", \"templates\": [ { \"name\": \"hello_world\", \"language\": \"en_US\", \"status\": \"APPROVED\", \"category\": \"UTILITY\" }, { \"name\": \"birthday_offer\", \"language\": \"pt_BR\", \"status\": \"APPR",
         "isError": false
       },
-      "ms": 151
+      "ms": 168
     },
     {
       "server": "@mcp-marketing/insights",
@@ -107,11 +107,11 @@
       "handshake": true,
       "toolCall": {
         "name": "get_executive_dashboard",
-        "ms": 3,
+        "ms": 4,
         "summary": "{ \"tool\": \"get_executive_dashboard\", \"dashboard\": { \"summary\": { \"campaigns\": 0, \"totalSpend\": 0, \"totalRevenue\": 0, \"totalConversions\": 0, \"totalClicks\": 0, \"overallRoas\": 0, \"overallCpa\": 0, \"overal",
         "isError": false
       },
-      "ms": 163
+      "ms": 179
     },
     {
       "server": "@mcp-marketing/ai-agent",
@@ -137,11 +137,11 @@
       "handshake": true,
       "toolCall": {
         "name": "get_ai_summary",
-        "ms": 4,
-        "summary": "{ \"tool\": \"get_ai_summary\", \"summary\": { \"totalMessages\": 42, \"pendingApprovals\": 0, \"confirmedActions\": 6, \"cancelledActions\": 6, \"recentTopics\": [ \"please launch campaign Summer Sale\", \"hello\", \"ple",
+        "ms": 3,
+        "summary": "{ \"tool\": \"get_ai_summary\", \"summary\": { \"totalMessages\": 50, \"pendingApprovals\": 0, \"confirmedActions\": 7, \"cancelledActions\": 7, \"recentTopics\": [ \"please launch campaign Summer Sale\", \"hello\", \"ple",
         "isError": false
       },
-      "ms": 173
+      "ms": 156
     },
     {
       "server": "@mcp-marketing/workflows",
@@ -172,7 +172,7 @@
         "summary": "{ \"tool\": \"list_workflows\", \"workflows\": [ { \"id\": \"73ec5051-61ef-4521-9bb2-3e5f68bb8e82\", \"name\": \"Birthday Smoke\", \"description\": \"Send a birthday WhatsApp message with optional coupon\", \"status\": \"",
         "isError": false
       },
-      "ms": 162
+      "ms": 159
     }
   ]
 }
