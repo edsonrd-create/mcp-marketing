@@ -90,5 +90,6 @@ export async function connectStdioMcpServer(options: ConnectStdioMcpServerOption
   const transport = new StdioServerTransport();
   await server.connect(transport);
 
-  mcpStartupLog(`✅ Transporte STDIO ativo — pronto para um cliente MCP.`);
+  mcpStartupLog(`✅ Cliente MCP conectado.`);
+  mcpStartupLog(`   Transporte STDIO ativo — JSON-RPC no stdin/stdout; logs em stderr.`);
 }

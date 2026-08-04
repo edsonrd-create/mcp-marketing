@@ -30,4 +30,17 @@ describe("mcp stdio startup helpers", () => {
     expect(spy).toHaveBeenCalledWith("hello\n");
     spy.mockRestore();
   });
+
+  it("formats health with name, version and counts", () => {
+    const text = formatMcpServerHealth({
+      name: "mcp-demo",
+      version: "1.0.0",
+      tools: 10,
+      prompts: 0,
+      resources: 0,
+    });
+    expect(text).toContain("Nome: mcp-demo");
+    expect(text).toContain("Versão: 1.0.0");
+    expect(text).toContain("Tools: 10");
+  });
 });

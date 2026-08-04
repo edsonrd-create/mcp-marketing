@@ -18,45 +18,88 @@ npm run mcp:smoke
 npm run mcp:client
 ```
 
-## Como executar (STDIO)
+## Como executar
 
 Os servidores MCP usam **`StdioServerTransport`**:
 
 - **Não abrem porta HTTP**
 - Ficam à espera de um **cliente MCP** no stdin/stdout
-- Logs de arranque e de tools vão para **stderr**
+- Logs de arranque (health, tools, “aguardando conexão”) vão para **stderr**
 - Se o terminal “parecer parado” depois do health, **é o comportamento esperado**
 
 ```bash
-npm run dev            # Google Ads MCP (mock) + logs
-npm run dev:meta       # Meta Ads
-npm run dev:whatsapp   # WhatsApp stub
-npm run dev:app        # Shell HTTP Fastify (separado)
+npm run doctor          # diagnóstico (sem conectar MCP)
+npm run dev             # Google Ads MCP (mock) + logs de arranque
+npm run dev:meta        # Meta Ads
+npm run dev:whatsapp    # WhatsApp stub
+npm run dev:app         # Shell HTTP Fastify (separado do MCP)
 ```
 
-## Como conectar no Cursor
+Ao correr `npm run dev` deverá ver algo como:
+
+```text
+🚀 Marketing Brain MCP iniciando... (mcp-google-ads)
+📦 Registrando Tools... (10)
+🧠 Registrando Prompts... (0)
+📚 Registrando Resources... (0)
+🩺 Health
+   • Nome: mcp-google-ads
+   • Versão: 1.0.0
+   • Tools: 10
+   • Prompts: 0
+   • Resources: 0
+🔌 Aguardando conexão de um cliente MCP via STDIO...
+✅ Cliente MCP conectado.
+```
+
+### Cursor
 
 1. `npm run build`
-2. `cp .cursor/mcp.json.example .cursor/mcp.json`
-3. Cursor Settings → MCP → reload
-4. Confirme **6 servers / 71 tools**
-5. Execute p.ex. `list_campaigns`
+2. Copie `.cursor/mcp.json.example` → `.cursor/mcp.json` (ajuste o caminho absoluto da raiz)
+3. Settings → MCP → reload
+4. Confirme servers/tools e chame p.ex. `list_campaigns`
 
-Guia: [docs/cursor.md](docs/cursor.md)
+Exemplo mínimo (Google Ads mock):
 
-## Como conectar no Claude Desktop
+```json
+{
+  "mcpServers": {
+    "mcp-google-ads": {
+      "command": "node",
+      "args": ["/ABSOLUTE/PATH/mcp-marketing/mcp-google-ads/dist/index.js"],
+      "env": {
+        "MCP_STDIO_SAFE": "true",
+        "GOOGLE_ADS_CLIENT_ID": "dev",
+        "GOOGLE_ADS_CLIENT_SECRET": "dev",
+        "GOOGLE_ADS_REFRESH_TOKEN": "dev",
+        "GOOGLE_ADS_DEVELOPER_TOKEN": "dev",
+        "GOOGLE_ADS_CUSTOMER_ID": "1234567890",
+        "GOOGLE_ADS_SKIP_AUTH_VALIDATE": "true",
+        "GOOGLE_ADS_FORCE_MOCK": "true",
+        "GOOGLE_ADS_LIVE_AUTH": "0"
+      }
+    }
+  }
+}
+```
 
-1. Edite `claude_desktop_config.json` (ver [docs/claude.md](docs/claude.md))
-2. Use `command: node` + `args: [ROOT/mcp-*/dist/...]` + env mock ou live
-3. Reinicie o Claude Desktop e teste uma tool
+Guia: [docs/cursor.md](docs/cursor.md) · template: [docs/mcp-config.example.json](docs/mcp-config.example.json)
 
-## Como conectar no MCP Inspector
+### Claude Desktop
+
+1. Edite `claude_desktop_config.json` (macOS: `~/Library/Application Support/Claude/`)
+2. Use `command: "node"` + `args` apontando para `mcp-*/dist/...` + `env` mock ou live
+3. Reinicie o Claude Desktop
+
+Guia: [docs/claude.md](docs/claude.md)
+
+### MCP Inspector
 
 ```bash
 npx @modelcontextprotocol/inspector node ./mcp-google-ads/dist/index.js
 ```
 
-Working directory = raiz do repo. Guia completo: [docs/MCP_INSPECTOR.md](docs/MCP_INSPECTOR.md)
+Working directory = raiz do repo. Guia: [docs/MCP_INSPECTOR.md](docs/MCP_INSPECTOR.md)
 
 ## Como testar uma Tool
 

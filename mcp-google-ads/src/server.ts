@@ -1,4 +1,4 @@
-import { connectStdioMcpServer, createStdioSafeLogger } from "@mcp-marketing/shared";
+import { connectStdioMcpServer, mcpStartupLog } from "@mcp-marketing/shared";
 import {
   createGoogleAdsModule,
   registerGoogleAdsTools,
@@ -10,7 +10,6 @@ const SERVER_NAME = "mcp-google-ads";
 const SERVER_VERSION = "1.0.0";
 
 process.env.MCP_STDIO_SAFE = "true";
-const logger = createStdioSafeLogger(SERVER_NAME);
 
 export interface GoogleAdsServerContext {
   server: McpServer;
@@ -26,28 +25,15 @@ export async function createGoogleAdsServer(): Promise<GoogleAdsServerContext> {
 
   registerGoogleAdsTools(server, module.provider);
 
-  logger.info(
-    {
-      customerId: module.provider.getCustomerId(),
-      mode: module.provider.isLiveMode() ? "live" : "mock",
-      tools: 10,
-    },
-    "Google Ads MCP provider ready",
+  mcpStartupLog(
+    `📦 Provider Google Ads pronto (mode=${module.provider.isLiveMode() ? "live" : "mock"}, customerId=${module.provider.getCustomerId()})`,
   );
 
   return { server, module };
 }
 
 export async function startGoogleAdsServer(): Promise<void> {
-  const { server, module } = await createGoogleAdsServer();
-  logger.info(
-    {
-      version: SERVER_VERSION,
-      customerId: module.provider.getCustomerId(),
-      mode: module.provider.isLiveMode() ? "live" : "mock",
-    },
-    "Google Ads MCP connecting (stdio)",
-  );
+  const { server } = await createGoogleAdsServer();
   await connectStdioMcpServer({
     server,
     name: SERVER_NAME,
