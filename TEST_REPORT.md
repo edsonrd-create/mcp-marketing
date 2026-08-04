@@ -1,7 +1,7 @@
 # TEST_REPORT.md — Marketing Brain MCP v1.0.0
 
 **Date:** 2026-08-04  
-**Host:** CI/local agent (sem credenciais live)
+**Host:** release certification (no live credentials)
 
 ## Summary
 
@@ -10,43 +10,31 @@
 | `npm run build` | PASS |
 | `npm run typecheck` | PASS |
 | `npm run lint` | PASS |
-| `npm test` (workspaces + core) | PASS |
-| `npm run test:google` | PASS (16 + 7) |
+| `npm test` | PASS |
+| `npm run test:google` | PASS |
 | `npm run validate:google` | PASS (10 tools) |
-| `npm run test:meta` | PASS (5 + 1) |
+| `npm run test:meta` | PASS |
 | `npm run validate:meta` | PASS (14 tools) |
 | `npm run validate` | PASS **71/71** |
 | `npm run mcp:smoke` | PASS **71/71** |
-| `npm run mcp:tools` | PASS (1 call / tool) |
+| `npm run mcp:tools` | PASS |
+| `npm run health` | PASS* |
+| `npm run doctor` | PASS* |
 | `npm run build:info` | PASS (`tools=71`, `tests=71`) |
 
-## Unit / integration counts
+\* Credential warnings only (operational).
 
-Approx. **71** Vitest cases across shared, mcp-*, providers e core (per `build:info`).
+## Coverage model
 
-## MCP tool exercise
-
-`MCP_TOOLS_REPORT.md` regenerado — todas as tools invocadas via stdio (mock/stub).  
-`recover_workflow_execution` com id inexistente retorna erro esperado (`NOT_FOUND`).
-
-## Init timings (mcp:smoke)
-
-| Server | Init |
-|--------|------|
-| google-ads | **216 ms** (lazy live SDK) |
-| meta-ads | 170 ms |
-| whatsapp | 177 ms |
-| insights | 185 ms |
-| ai-agent | 179 ms |
-| workflows | 174 ms |
+- **Unit/integration:** Vitest across shared, mcp-*, providers, core (~71 cases)  
+- **Contract:** system-validation tool inventory  
+- **E2E MCP:** smoke (listTools) + tools (callTool each)  
+- **Line coverage %:** not instrumented in this release  
 
 ## Not executed (operational)
 
-- Live Google Ads OAuth / API (`GOOGLE_ADS_LIVE_AUTH=1` + secrets)
-- Live Meta Graph
-- Live WhatsApp Cloud API
-- Live OpenAI billing path
+Live Google Ads · Live Meta Graph · Live WhatsApp Cloud · Live OpenAI
 
 ## Verdict
 
-Qualidade automatizada **PASS** para release v1.0.0 staged.
+Automated test surface **PASS** for v1.0.0 final release.

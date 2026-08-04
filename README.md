@@ -48,10 +48,10 @@ Clientes: [docs/cursor.md](docs/cursor.md) · [docs/claude.md](docs/claude.md) �
 
 ## Produção
 
-- Relatório final: [FINAL_STATUS.md](FINAL_STATUS.md)
+- Status: [PROJECT_STATUS.md](PROJECT_STATUS.md)
+- Final release: [FINAL_RELEASE_REPORT.md](FINAL_RELEASE_REPORT.md)
+- Quality / Security / Tests / Summary: [QUALITY_REPORT.md](QUALITY_REPORT.md) · [SECURITY_REPORT.md](SECURITY_REPORT.md) · [TEST_REPORT.md](TEST_REPORT.md) · [PROJECT_SUMMARY.md](PROJECT_SUMMARY.md)
 - Readiness: [PRODUCTION_READINESS_REPORT.md](PRODUCTION_READINESS_REPORT.md)
-- Auditoria: [CODE_AUDIT.md](CODE_AUDIT.md)
-- Testes: [TEST_REPORT.md](TEST_REPORT.md)
 
 Live Ads/Graph exige credenciais reais no `.env` (nunca hardcoded).
 

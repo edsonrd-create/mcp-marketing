@@ -42,4 +42,4 @@ npm run start:meta
 npm run start:whatsapp
 ```
 
-Detalhes: [docs/INSTALL.md](docs/INSTALL.md) · [docs/CONFIGURATION.md](docs/CONFIGURATION.md)
+Detalhes: [docs/INSTALL.md](docs/INSTALL.md) · [docs/CONFIGURATION.md](docs/CONFIGURATION.md) · [PROJECT_STATUS.md](PROJECT_STATUS.md)

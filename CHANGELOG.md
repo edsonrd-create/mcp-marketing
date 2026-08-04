@@ -1,21 +1,20 @@
 # Changelog
 
-## [1.0.0] - 2026-08-03 — Production Ready
+## [1.0.0] - 2026-08-04 — Final Release (Production Ready)
 
-### Added
-- Certificação **v1.0.0 Production Ready** (71 MCP tools, 6 servers)
-- Relatórios: `CODE_AUDIT.md`, `TEST_REPORT.md`, `PRODUCTION_READINESS_REPORT.md`, `FINAL_STATUS.md`
-- Core MCP Framework, providers Google Ads + Meta Ads, WhatsApp/AI/Workflows/Insights
-- CLI `marketing-brain`, Docker, CI, docs de instalação e configuração
+### Certified
+- Build, typecheck, lint, test, validate (**71/71**), health, doctor, mcp:smoke, mcp:tools
+- Google Ads / Meta Ads mock validation PASS
+- WhatsApp stub + tools PASS
+- Release pack: `FINAL_RELEASE_REPORT.md`, `QUALITY_REPORT.md`, `SECURITY_REPORT.md`, `TEST_REPORT.md`, `PROJECT_SUMMARY.md`, `PROJECT_STATUS.md`
 
-### Fixed
-- Shared build `tsc --build --force` (evita `dist/` stale)
-- WhatsApp: verify token via env; erros Graph sanitizados
-- HTTP: `details` de erro só em `VALIDATION`
-- Google Ads: lazy-load do SDK live (mock cold start mais rápido)
-- Workflows / AI Agent: erros via `AppError`
-- Remoção de dep não usada (`long`); `google-auth-library` no root
-- Limpeza de shims/orfaos e alinhamento de env/docs
+### Included platform
+- 6 MCP providers · **71 tools** · Core framework · CLI · Docker · CI
+- Security: env secrets, sanitized Graph errors, validation-only HTTP details
+- Performance: lazy Google Ads live SDK
 
 ### Requirements
 - Node.js >= 22
+
+### Note
+Development closed on v1.0.0. Live Ads/Graph/WhatsApp/OpenAI remain operator credential pendencies.
