@@ -8,7 +8,7 @@ import {
 } from "../../src/providers/google-ads/index.js";
 
 const SERVER_NAME = "mcp-google-ads";
-const SERVER_VERSION = "1.1.0";
+const SERVER_VERSION = "1.0.0";
 
 const logger = createLogger(SERVER_NAME);
 

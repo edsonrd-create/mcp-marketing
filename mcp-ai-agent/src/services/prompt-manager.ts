@@ -1,4 +1,4 @@
-import { createLogger, type Logger } from "@mcp-marketing/shared";
+import { AppError, ErrorCode, createLogger, type Logger } from "@mcp-marketing/shared";
 
 export interface PromptTemplate {
   id: string;
@@ -74,7 +74,10 @@ export class PromptManager {
   render(templateId: string, variables: Record<string, string | number>): string {
     const template = this.templates.get(templateId);
     if (!template) {
-      throw new Error(`Prompt template not found: ${templateId}`);
+      throw new AppError({
+        code: ErrorCode.NOT_FOUND,
+        message: `Prompt template not found: ${templateId}`,
+      });
     }
 
     let rendered = template.template;

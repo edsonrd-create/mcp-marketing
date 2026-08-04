@@ -10,12 +10,14 @@ export async function createHttpApp(ctx: AppContext) {
 
   app.setErrorHandler((error, _request, reply) => {
     if (isAppError(error)) {
-      ctx.logger.warn({ err: error, code: error.code }, error.message);
+      ctx.logger.warn({ code: error.code, message: error.message }, error.message);
       return reply.code(error.statusCode).send({
         error: {
           code: error.code,
           message: error.message,
-          details: error.details,
+          ...(error.code === "VALIDATION" && error.details !== undefined
+            ? { details: error.details }
+            : {}),
         },
       });
     }

@@ -1,31 +1,21 @@
 # Changelog
 
-## [1.1.0] - 2026-08-03 — LTS + Master Prompt v2.0 + Sprint Final Go Live
-
-### Fixed
-- Shared build: `tsc --build --force` evita `dist/` ausente com `tsbuildinfo` stale
-- WhatsApp: remove default hardcoded de verify token no path live; erros Graph sanitizados (`ExternalApiError`)
-- Documentação alinhada a 71 tools, Meta provider e pendências de DB/Firebase
+## [1.0.0] - 2026-08-03 — Production Ready
 
 ### Added
-- Marketing Brain CLI (`marketing-brain`) with doctor, start, validate, live, status, update, version
-- `create-marketing-brain` project scaffolder
-- Operational scripts: build-info, package-release, system-validation, mcp-smoke, mcp-tools, live-validation, compat-init, health, validate:meta
-- Core MCP Framework (`src/core`): ToolRegistry, ProviderRegistry, Bootstrap, HealthService, DoctorService
-- Google Ads provider (`src/providers/google-ads`) with OAuth2, retry, 10 tools
-- Meta Ads provider (`src/providers/meta-ads`) — 10 Master tools + 4 legacy aliases
-- WhatsApp Master tools: `send_birthday`, `list_templates`, `get_message_status`, `validate_webhook`
-- AI Agent modules: Planner, ConversationMemory, RecommendationEngine, PromptManager + 7 Master tools
-- Workflows: `execute_workflow`, `resume_workflow` (additive)
-- Insights: CPC alongside ROAS/CPA/CTR
-- Release engineering: `VERSION`, `BUILD_INFO.json`, `RELEASE_MANIFEST.json`
-- Docker / GitHub / licensing artifacts
-- Docs: INSTALL, API, CONFIGURATION, CORE_FRAMEWORK, GOOGLE_ADS, META_ADS, WHATSAPP, `PRODUCTION_READINESS_REPORT.md`
+- Certificação **v1.0.0 Production Ready** (71 MCP tools, 6 servers)
+- Relatórios: `CODE_AUDIT.md`, `TEST_REPORT.md`, `PRODUCTION_READINESS_REPORT.md`, `FINAL_STATUS.md`
+- Core MCP Framework, providers Google Ads + Meta Ads, WhatsApp/AI/Workflows/Insights
+- CLI `marketing-brain`, Docker, CI, docs de instalação e configuração
 
-### MCP Servers (71 tools)
-- Google Ads (10), Meta Ads (14), WhatsApp (10), Insights (8), AI Agent (14), Workflows (15)
+### Fixed
+- Shared build `tsc --build --force` (evita `dist/` stale)
+- WhatsApp: verify token via env; erros Graph sanitizados
+- HTTP: `details` de erro só em `VALIDATION`
+- Google Ads: lazy-load do SDK live (mock cold start mais rápido)
+- Workflows / AI Agent: erros via `AppError`
+- Remoção de dep não usada (`long`); `google-auth-library` no root
+- Limpeza de shims/orfaos e alinhamento de env/docs
 
 ### Requirements
 - Node.js >= 22
-- TypeScript ESM monorepo
-- Cross-platform: Windows, Linux, macOS

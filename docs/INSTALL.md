@@ -1,4 +1,4 @@
-# Installation — Marketing Brain MCP
+# Installation — Marketing Brain MCP v1.0.0
 
 ## Requirements
 
@@ -22,7 +22,7 @@ npm run build
 npm run doctor
 npm run health
 npm run validate
-npm run mcp:smoke
+WHATSAPP_STUB=true npm run mcp:smoke
 ```
 
 ## Start
@@ -48,10 +48,12 @@ npm run start:workflows
 
 Client guides: [cursor.md](cursor.md), [claude.md](claude.md), [mcp-config.example.json](mcp-config.example.json).
 
+Root quickstart: [../INSTALL.md](../INSTALL.md).
+
 ## Missing credentials
 
-Empty values after `cp .env.example .env` are expected until live credentials are supplied. `npm run doctor` lists exactly which provider keys are missing. Root quickstart: [../INSTALL.md](../INSTALL.md).
+Empty values after `cp .env.example .env` are expected until live credentials are supplied. `npm run doctor` lists exactly which provider keys are missing.
 
 ## Production checklist
 
-See [PRODUCTION_FINAL_REPORT.md](../PRODUCTION_FINAL_REPORT.md) and [PRODUCTION_READINESS_REPORT.md](../PRODUCTION_READINESS_REPORT.md).
+See [FINAL_STATUS.md](../FINAL_STATUS.md) and [PRODUCTION_READINESS_REPORT.md](../PRODUCTION_READINESS_REPORT.md).

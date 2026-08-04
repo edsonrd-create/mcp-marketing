@@ -88,7 +88,7 @@ export async function withMcpClient(target, work, env = buildSmokeEnv()) {
     stderr: "pipe",
   });
 
-  const client = new Client({ name: "marketing-brain-mcp-smoke", version: "1.1.0" });
+  const client = new Client({ name: "marketing-brain-mcp-smoke", version: "1.0.0" });
 
   try {
     await client.connect(transport);

@@ -42,7 +42,7 @@ npm run dev
 | `GOOGLE_ADS_CUSTOMER_ID` | for Google Ads | Ads customer ID |
 | `GOOGLE_ADS_LOGIN_CUSTOMER_ID` | no | MCC login customer id |
 | `GOOGLE_ADS_SKIP_AUTH_VALIDATE` | no | `true` for smoke tests |
-| `GOOGLE_ADS_LIVE_AUTH` | no | `1` for live OAuth + API |
+| `GOOGLE_ADS_LIVE_AUTH` | no | `1` / `true` for live OAuth + API |
 | `GOOGLE_ADS_FORCE_MOCK` | no | `true` to force mock data layer |
 
 See [GOOGLE_ADS.md](GOOGLE_ADS.md) for the full provider guide.
@@ -53,9 +53,8 @@ See [GOOGLE_ADS.md](GOOGLE_ADS.md) for the full provider guide.
 |----------|----------|-------------|
 | `META_ACCESS_TOKEN` | for Meta Ads MCP | Graph API access token |
 | `META_AD_ACCOUNT_ID` | for Meta Ads MCP | Ad account ID (`act_...`) |
-| `META_APP_ID` | no | Meta app id (optional Graph helpers) |
-| `META_APP_SECRET` | no | Meta app secret (optional Graph helpers) |
 | `META_SKIP_AUTH_VALIDATE` | no | `true` for smoke tests |
+| `META_FORCE_MOCK` | no | `true` to force mock data layer |
 
 ### WhatsApp
 
@@ -69,11 +68,11 @@ See [GOOGLE_ADS.md](GOOGLE_ADS.md) for the full provider guide.
 
 ### Optional Firebase
 
-`FIREBASE_PROJECT_ID`, `FIREBASE_CLIENT_EMAIL`, `FIREBASE_PRIVATE_KEY` — documentadas para persistência futura; **ainda não são lidas pelo runtime** nesta versão.
+`FIREBASE_PROJECT_ID`, `FIREBASE_CLIENT_EMAIL`, `FIREBASE_PRIVATE_KEY` — reservadas para persistência futura; **não lidas pelo runtime** em v1.0.0.
 
 ### Database
 
-`DATABASE_MODE` aceita `memory` \| `sqlite` \| `postgres` no schema Zod. **Implementado hoje:** apenas `memory`. `sqlite`/`postgres` são pendências operacionais (não contornar com mocks fictícios em produção).
+`DATABASE_MODE` aceita `memory` \| `sqlite` \| `postgres` no schema Zod. **Implementado:** apenas `memory`.
 
 ## Validation behaviour
 

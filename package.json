@@ -1,9 +1,9 @@
 {
   "name": "mcp-marketing",
   "private": true,
-  "version": "1.1.0",
+  "version": "1.0.0",
   "type": "module",
-  "description": "Marketing Brain v1.1 LTS — plataforma MCP instalável: Google Ads, Meta Ads, WhatsApp, Insights, AI Agent, Workflows",
+  "description": "Marketing Brain v1.0.0 Production Ready — plataforma MCP: Google Ads, Meta Ads, WhatsApp, Insights, AI Agent, Workflows",
   "bin": {
     "marketing-brain": "./packages/cli/bin/marketing-brain.js",
     "create-marketing-brain": "./packages/create-marketing-brain/bin/create-marketing-brain.js"
@@ -70,7 +70,7 @@
     "dotenv": "^16.4.7",
     "fastify": "^5.2.1",
     "google-ads-api": "^20.0.1",
-    "long": "^5.3.2",
+    "google-auth-library": "^9.15.1",
     "openai": "^4.89.0",
     "pino": "^9.6.0",
     "pino-pretty": "^13.0.0",

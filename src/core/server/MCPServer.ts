@@ -23,7 +23,7 @@ export class MarketingBrainMCPServer {
     this.providerRegistry = options.providerRegistry;
     this.server = new McpServer({
       name: options.name ?? "marketing-brain-mcp",
-      version: options.version ?? "1.1.0",
+      version: options.version ?? "1.0.0",
     });
   }
 

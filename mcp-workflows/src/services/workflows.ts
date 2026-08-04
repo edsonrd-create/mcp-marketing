@@ -1,4 +1,5 @@
 import { randomUUID } from "node:crypto";
+import { AppError, ErrorCode } from "@mcp-marketing/shared";
 import { seedTemplates } from "./templates.js";
 import type {
   Workflow,
@@ -77,7 +78,7 @@ export function updateWorkflow(
 ): Workflow {
   const workflow = store.workflows.find((w) => w.id === workflowId);
   if (!workflow) {
-    throw new Error(`Workflow not found: ${workflowId}`);
+    throw new AppError({ code: ErrorCode.NOT_FOUND, message: `Workflow not found: ${workflowId}` });
   }
   Object.assign(workflow, updates, { updatedAt: now() });
   appendAudit(store, workflowId, "workflow_updated", "system", { updates: Object.keys(updates) });
@@ -87,7 +88,7 @@ export function updateWorkflow(
 export function duplicateWorkflow(store: WorkflowsStore, workflowId: string): Workflow {
   const source = store.workflows.find((w) => w.id === workflowId);
   if (!source) {
-    throw new Error(`Workflow not found: ${workflowId}`);
+    throw new AppError({ code: ErrorCode.NOT_FOUND, message: `Workflow not found: ${workflowId}` });
   }
   return createWorkflow(store, {
     name: `${source.name} (copy)`,
@@ -110,10 +111,10 @@ export function pauseWorkflow(store: WorkflowsStore, workflowId: string): Workfl
 export function resumeWorkflow(store: WorkflowsStore, workflowId: string): Workflow {
   const workflow = store.workflows.find((w) => w.id === workflowId);
   if (!workflow) {
-    throw new Error(`Workflow not found: ${workflowId}`);
+    throw new AppError({ code: ErrorCode.NOT_FOUND, message: `Workflow not found: ${workflowId}` });
   }
   if (workflow.status !== "paused") {
-    throw new Error(`Workflow ${workflowId} is not paused (status: ${workflow.status})`);
+    throw new AppError({ code: ErrorCode.VALIDATION, message: `Workflow ${workflowId} is not paused (status: ${workflow.status})` });
   }
   return updateWorkflow(store, workflowId, { status: "active" });
 }
@@ -131,10 +132,10 @@ export function deleteWorkflow(store: WorkflowsStore, workflowId: string): boole
 export function runWorkflow(store: WorkflowsStore, workflowId: string): WorkflowExecution {
   const workflow = store.workflows.find((w) => w.id === workflowId);
   if (!workflow) {
-    throw new Error(`Workflow not found: ${workflowId}`);
+    throw new AppError({ code: ErrorCode.NOT_FOUND, message: `Workflow not found: ${workflowId}` });
   }
   if (workflow.status === "paused") {
-    throw new Error(`Workflow ${workflowId} is paused`);
+    throw new AppError({ code: ErrorCode.VALIDATION, message: `Workflow ${workflowId} is paused` });
   }
 
   const execution: WorkflowExecution = {
@@ -204,15 +205,15 @@ export function recoverWorkflowExecution(
 ): WorkflowExecution {
   const execution = store.executions.find((e) => e.id === executionId);
   if (!execution) {
-    throw new Error(`Execution not found: ${executionId}`);
+    throw new AppError({ code: ErrorCode.NOT_FOUND, message: `Execution not found: ${executionId}` });
   }
   if (execution.status !== "failed") {
-    throw new Error(`Execution ${executionId} is not failed (status: ${execution.status})`);
+    throw new AppError({ code: ErrorCode.VALIDATION, message: `Execution ${executionId} is not failed (status: ${execution.status})` });
   }
 
   const workflow = store.workflows.find((w) => w.id === execution.workflowId);
   if (!workflow) {
-    throw new Error(`Workflow not found for execution: ${executionId}`);
+    throw new AppError({ code: ErrorCode.NOT_FOUND, message: `Workflow not found for execution: ${executionId}` });
   }
 
   execution.status = "recovered";
@@ -243,7 +244,7 @@ export function createWorkflowFromTemplate(
   ensureStoreSeeded(store);
   const template = store.templates.find((t) => t.id === templateId);
   if (!template) {
-    throw new Error(`Template not found: ${templateId}`);
+    throw new AppError({ code: ErrorCode.NOT_FOUND, message: `Template not found: ${templateId}` });
   }
 
   const workflow = createWorkflow(store, {

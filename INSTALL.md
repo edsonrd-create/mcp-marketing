@@ -1,6 +1,4 @@
-# Installation — Marketing Brain MCP
-
-Guia rápido. Detalhes: [docs/INSTALL.md](docs/INSTALL.md).
+# Installation — Marketing Brain MCP v1.0.0
 
 ## Requirements
 
@@ -15,7 +13,7 @@ cp .env.example .env
 npm run build
 ```
 
-## Verify
+## Verify (sem credenciais live)
 
 ```bash
 npm run doctor
@@ -24,28 +22,24 @@ npm run validate
 WHATSAPP_STUB=true npm run mcp:smoke
 ```
 
-## Missing credentials (expected until live go-live)
+## Credenciais faltando (esperado até go-live live)
 
-Com `.env` copiado do example (valores vazios), `doctor` / `health` reportam:
+Com `.env` vazio copiado do example, `npm run doctor` lista:
 
-- `GOOGLE_ADS_CLIENT_ID`, `GOOGLE_ADS_CLIENT_SECRET`, `GOOGLE_ADS_REFRESH_TOKEN`, `GOOGLE_ADS_DEVELOPER_TOKEN`, `GOOGLE_ADS_CUSTOMER_ID`
-- `META_ACCESS_TOKEN`, `META_AD_ACCOUNT_ID`
-- `WHATSAPP_TOKEN`, `WHATSAPP_PHONE_NUMBER_ID`
-- `OPENAI_API_KEY`
+- Google Ads: `GOOGLE_ADS_CLIENT_ID`, `GOOGLE_ADS_CLIENT_SECRET`, `GOOGLE_ADS_REFRESH_TOKEN`, `GOOGLE_ADS_DEVELOPER_TOKEN`, `GOOGLE_ADS_CUSTOMER_ID`
+- Meta Ads: `META_ACCESS_TOKEN`, `META_AD_ACCOUNT_ID`
+- WhatsApp: `WHATSAPP_TOKEN`, `WHATSAPP_PHONE_NUMBER_ID` (+ `WHATSAPP_VERIFY_TOKEN` para webhook)
+- OpenAI: `OPENAI_API_KEY`
 
-Preencha no `.env` (nunca hardcode no código). Para WhatsApp webhook live, defina também `WHATSAPP_VERIFY_TOKEN`.
+Preencha no `.env`. Não coloque secrets no código.
 
 ## Start
 
 ```bash
-npm run dev          # HTTP shell
-npm run start:google # MCP Google Ads (stdio)
+npm run dev
+npm run start:google
 npm run start:meta
 npm run start:whatsapp
 ```
 
-Clientes MCP: [docs/cursor.md](docs/cursor.md), [docs/claude.md](docs/claude.md), [docs/mcp-config.example.json](docs/mcp-config.example.json).
-
-## Production
-
-Ver [PRODUCTION_FINAL_REPORT.md](PRODUCTION_FINAL_REPORT.md).
+Detalhes: [docs/INSTALL.md](docs/INSTALL.md) · [docs/CONFIGURATION.md](docs/CONFIGURATION.md)
