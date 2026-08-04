@@ -1,4 +1,4 @@
-# Configuration
+# Configuration — Marketing Brain MCP v1.0.0
 
 Marketing Brain validates environment variables on boot via **EnvValidator** (Zod)
 and exposes them through **ConfigService**.

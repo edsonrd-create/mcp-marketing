@@ -56,4 +56,4 @@ Empty values after `cp .env.example .env` are expected until live credentials ar
 
 ## Production checklist
 
-See [FINAL_STATUS.md](../FINAL_STATUS.md) and [PRODUCTION_READINESS_REPORT.md](../PRODUCTION_READINESS_REPORT.md).
+See [PROJECT_STATUS.md](../PROJECT_STATUS.md) and [FINAL_RELEASE_REPORT.md](../FINAL_RELEASE_REPORT.md).
