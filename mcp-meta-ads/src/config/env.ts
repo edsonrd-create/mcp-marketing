@@ -17,6 +17,5 @@ export type MetaAdsEnv = z.infer<typeof metaAdsEnvSchema>;
 export function loadMetaAdsEnv(): MetaAdsEnv {
   return loadEnv({
     schema: metaAdsEnvSchema,
-    skipEnvFile: process.env.VITEST === "true" || process.env.NODE_ENV === "test",
   });
 }

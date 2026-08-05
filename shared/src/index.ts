@@ -1,5 +1,20 @@
-export { AppError, ErrorCode, isAppError, toErrorMessage } from "./errors.js";
-export { createLogger, type LogLevel } from "./logger.js";
+export {
+  AppError,
+  ErrorCode,
+  ExternalApiError,
+  ValidationError,
+  isAppError,
+  isExternalApiError,
+  isValidationError,
+  toErrorMessage,
+} from "./errors.js";
+export {
+  LoggerFactory,
+  createLogger,
+  type LogLevel,
+  type Logger,
+  type LoggerFactoryOptions,
+} from "./logger.js";
 export { toPrettyJson } from "./json.js";
 export { readJsonFile, writeJsonFile } from "./json-file.js";
 export {

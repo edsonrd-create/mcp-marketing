@@ -7,6 +7,7 @@ export default [
   {
     ignores: [
       '**/dist/**',
+      '**/dist-app/**',
       '**/dist-release/**',
       '**/node_modules/**',
       '**/coverage/**',
