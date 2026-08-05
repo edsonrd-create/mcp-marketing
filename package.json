@@ -50,7 +50,7 @@
     "tools:report": "node scripts/tools-report.mjs",
     "inspect": "node scripts/mcp-inspect.mjs",
     "check:entries": "node scripts/check-mcp-entries.mjs",
-    "setup:cursor": "node -e \"import('node:fs').then(fs=>{fs.mkdirSync('.cursor',{recursive:true});fs.copyFileSync('.cursor/mcp.json.example','.cursor/mcp.json');console.log('Wrote .cursor/mcp.json');})\"",
+    "setup:cursor": "node scripts/setup-cursor.mjs",
     "live:validate": "node scripts/live-validation.mjs",
     "workflows:run": "node scripts/workflows-run.mjs",
     "build:info": "node scripts/build-info.mjs",
