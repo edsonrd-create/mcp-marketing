@@ -192,10 +192,15 @@ export function countTestFiles(dir = ROOT) {
 }
 
 export function findToolSourceFile(workspaceDir) {
+  const providerRegister = {
+    "mcp-google-ads": join(ROOT, "src/providers/google-ads/tools/register.ts"),
+    "mcp-meta-ads": join(ROOT, "src/providers/meta-ads/tools/register.ts"),
+  };
   const candidates = [
+    providerRegister[workspaceDir],
     join(ROOT, workspaceDir, "src", "tools", "index.ts"),
     join(ROOT, workspaceDir, "dist", "tools", "index.js"),
-  ];
+  ].filter(Boolean);
   return candidates.find((p) => existsSync(p)) ?? null;
 }
 
@@ -209,6 +214,16 @@ export function countToolsInSource(filePath) {
     const nameMatch = match.match(/"([^"]+)"/);
     if (nameMatch) {
       names.add(nameMatch[1]);
+    }
+  }
+
+  // Fallback: exported *TOOL_NAMES = [...] as const (re-export packages)
+  if (names.size === 0) {
+    const arrayMatch = content.match(/export const \w*TOOL_NAMES\s*=\s*\[([\s\S]*?)\]\s*as const/);
+    if (arrayMatch) {
+      for (const m of arrayMatch[1].matchAll(/"([^"]+)"/g)) {
+        names.add(m[1]);
+      }
     }
   }
 
