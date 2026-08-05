@@ -11,7 +11,7 @@ Use the same stdio pattern as other clients:
 | Field | Value |
 |-------|--------|
 | Executable | `node` (absolute path recommended) |
-| Args | path to `dist/index.js` or `dist/server.js` per package |
+| Args | path to `mcp-<pkg>/dist/index.js` or `mcp-<pkg>/dist/server.js` (never root `dist/index.js`) |
 | cwd | monorepo root |
 | env | credentials from `.env` (never commit secrets) |
 

@@ -10,27 +10,34 @@
 
 ## Pré-requisitos
 
-```bash
-cd E:\marketing-brain-mcp
+Na pasta do projeto (exemplo Windows):
+
+```bat
+cd E:\marketing-brain
 npm install
 npm run build
+npm run check:entries
 ```
 
-Confirme que existem, por exemplo:
+Confirme que existem:
 
-- `mcp-google-ads\dist\index.js`
-- `mcp-meta-ads\dist\index.js`
-- `mcp-whatsapp\dist\server.js`
+- `E:\marketing-brain\mcp-google-ads\dist\index.js`
+- `E:\marketing-brain\mcp-meta-ads\dist\index.js`
+- `E:\marketing-brain\mcp-whatsapp\dist\server.js`
+
+Se a pasta for outra (ex. `E:\marketing-brain-mcp`), use **esse** caminho como Working Directory — o importante é ser a **raiz do monorepo** (onde está `package.json`).
 
 ---
 
 ## Opção A — ficheiro do projeto (recomendado)
 
-```bash
-cp .cursor/mcp.json.example .cursor/mcp.json
+```bat
+cd E:\marketing-brain
+copy .cursor\mcp.json.example .cursor\mcp.json
 ```
 
-No Cursor: **Settings → MCP → Refresh**. Devem aparecer **6 servers / 71 tools**.
+No Cursor: abra a pasta `E:\marketing-brain` → **Settings → MCP → Refresh**.  
+Devem aparecer **6 servers / 71 tools**.
 
 ---
 
@@ -43,10 +50,14 @@ No Cursor: **Settings → MCP → Refresh**. Devem aparecer **6 servers / 71 too
 | **Nome do servidor** | `Marketing Brain` (ou `marketing-brain-google-ads`) |
 | **Type** | command |
 | **Command** | `node` |
-| **Working Directory** | `E:\marketing-brain-mcp` |
+| **Working Directory** | `E:\marketing-brain` |
 | **Arguments** | `mcp-google-ads\dist\index.js` |
 
-**Não use** `dist\index.js` na raiz.
+**Não use**
+
+- `E:\marketing-brain\dist\index.js`
+- `dist\index.js`
+- `dist\mcp\tools.js`
 
 ### Variáveis de ambiente (mock / desenvolvimento)
 
@@ -64,13 +75,13 @@ GOOGLE_ADS_LIVE_AUTH=0
 
 ### Live (conta real)
 
-Preencha secrets reais; remova mock; use:
-
 ```text
 GOOGLE_ADS_LIVE_AUTH=1
 GOOGLE_ADS_SKIP_AUTH_VALIDATE=false
 GOOGLE_ADS_FORCE_MOCK=false
 ```
+
+(+ secrets reais no env / `.env`)
 
 ---
 
@@ -86,63 +97,46 @@ GOOGLE_ADS_FORCE_MOCK=false
 
 ---
 
-## Como validar a conexão
+## Erros comuns
 
-1. Settings → MCP → o server deve ficar **verde / connected**
-2. Ou na raiz do repo:
-
-```bash
-npm run mcp:smoke
-npm run mcp:client
-```
-
-3. Arranque local com logs:
-
-```bash
-npm run dev
-```
-
-Deve mostrar: versão, quantidade de tools, “Aguardando conexão via STDIO”, “Cliente conectado”.
+| Sintoma | Causa | Correção |
+|---------|--------|----------|
+| 0 tools / server red | Args = `dist\index.js` | Use `mcp-google-ads\dist\index.js` |
+| ficheiro não encontrado | Sem `npm run build` | `npm run build` + `npm run check:entries` |
+| “parece travado” | STDIO à espera | Normal — sem porta HTTP |
+| pasta errada | Abriu outro diretório | Open Folder = raiz com `package.json` |
 
 ---
 
-## Como listar Tools
+## Como validar a conexão
 
-No Cursor: painel MCP / chat com tools do server.  
-Localmente:
+```bat
+cd E:\marketing-brain
+npm run check:entries
+npm run mcp:smoke
+npm run mcp:client
+npm run doctor
+```
 
-```bash
+No Cursor: server verde → chame `list_campaigns`.
+
+---
+
+## Como listar / testar Tools
+
+```bat
 npm run tools:report
 npm run mcp:discover
+npm run mcp:client
+npm run inspect
 ```
 
 Inventário: `TOOLS_REPORT.md` (**71** tools).
 
 ---
 
-## Como testar uma Tool
-
-No Cursor: chame `list_campaigns` (Google/Meta) ou `list_templates` (WhatsApp stub).
-
-Localmente:
-
-```bash
-npm run mcp:client
-npm run mcp:tools
-```
-
-Inspector:
-
-```bash
-npm run inspect
-# ou
-npm run inspect -- mcp-meta-ads/dist/index.js
-```
-
----
-
 ## Comportamento esperado
 
-- Sem porta HTTP
-- Logs em **stderr**
+- Sem porta HTTP  
+- Logs em **stderr**  
 - Processo à espera no stdin após o banner — **normal**

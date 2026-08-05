@@ -31,6 +31,8 @@ Os servidores MCP usam **`StdioServerTransport`**:
 
 ```bash
 npm run doctor          # diagnóstico (sem conectar MCP)
+npm run check:entries   # confirma mcp-*/dist entrypoints
+npm run setup:cursor    # copia .cursor/mcp.json.example → .cursor/mcp.json
 npm run dev             # Google Ads MCP (mock) + logs de arranque
 npm run dev:meta        # Meta Ads
 npm run dev:whatsapp    # WhatsApp stub

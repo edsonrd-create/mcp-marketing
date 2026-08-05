@@ -47,7 +47,9 @@ O ficheiro [`.cursor/mcp.json.example`](../.cursor/mcp.json.example) já usa `${
 }
 ```
 
-Substitua `ROOT` pelo caminho absoluto do repositório. Template completo: [`mcp-config.example.json`](mcp-config.example.json).
+Substitua `ROOT` pelo caminho absoluto do repositório (ex.: `E:\\marketing-brain`).
+
+**Não use** `ROOT/dist/index.js` — use `ROOT/mcp-google-ads/dist/index.js`. Template completo: [`mcp-config.example.json`](mcp-config.example.json).
 
 ## Validate (local harness ≡ Handshake + listTools + callTool)
 
