@@ -1,50 +1,34 @@
-# Marketing Brain v1.1.0 LTS — Release Notes
+# Marketing Brain v1.0.0 — Release Notes (Final)
 
-**Release date:** 2026-08-03  
-**Codename:** LTS  
+**Release date:** 2026-08-04  
+**Status:** Production Ready (staged)  
 **Node:** >= 22
 
 ## Overview
 
-Marketing Brain v1.1 LTS is an installable MCP platform for marketing operations: Google Ads, Meta Ads, WhatsApp messaging, analytics insights, an approval-aware AI agent, and workflow automation.
+Final release of Marketing Brain MCP: installable platform for Google Ads, Meta Ads, WhatsApp, Insights, AI Agent and Workflows over the Model Context Protocol.
 
-## Highlights
+## Numbers
 
-- **52 MCP tools** across 6 servers
-- **CLI tooling** for doctor, validation, status, and release packaging
-- **Monorepo workspaces** with shared TypeScript/ESM foundation
-- **Memory database mode** by default; optional Firebase configuration documented
+- **Version:** v1.0.0  
+- **Providers:** 6  
+- **Tools:** 71  
+- **Automated tests (build-info):** 71  
 
-## Upgrade / Install
+## Install
 
 ```bash
 npm install
+cp .env.example .env
 npm run build
 npm run validate
-marketing-brain doctor
+WHATSAPP_STUB=true npm run mcp:smoke
 ```
 
-## Validation
+## Documentation
 
-```bash
-npm run validate      # structure and tool counts
-npm run mcp:smoke     # source/dist smoke (no credentials)
-npm run live:validate # writes report; blocked without .env (exit 0)
-```
+`INSTALL.md` · `docs/CONFIGURATION.md` · `PROJECT_STATUS.md` · `FINAL_RELEASE_REPORT.md`
 
-## Distribution
+## Operational note
 
-```bash
-npm run build:info
-npm run package:release
-```
-
-Artifacts: `BUILD_INFO.json`, `RELEASE_MANIFEST.json`, `dist-release/marketing-brain-1.1.0-lts.tar.gz`.
-
-See `LTS_CERTIFICATION.md` for the Long Term Support sign-off.
-
-Produces `dist-release/marketing-brain-1.1.0-lts/` and tarball.
-
-## Support
-
-See `docs/QUICKSTART.md` and `docs/CONFIGURATION.md` for setup.
+Live Google Ads / Meta Graph / WhatsApp Cloud / OpenAI require real `.env` credentials supplied by the operator. No fictional credentials are embedded in the product.

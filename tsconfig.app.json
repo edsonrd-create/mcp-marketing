@@ -9,6 +9,6 @@
     "sourceMap": true
   },
   "include": ["src/**/*"],
-  "exclude": ["src/**/*.test.ts"],
+  "exclude": ["src/**/*.test.ts", "src/**/__tests__/**"],
   "references": [{ "path": "./shared" }]
 }

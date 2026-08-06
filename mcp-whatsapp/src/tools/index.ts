@@ -16,6 +16,22 @@ export function registerWhatsAppTools(server: McpServer, ctx: WhatsAppToolsConte
   const db = ctx.db ?? createDatabase({ driver: "memory" });
   const scheduler = createSchedulerService(db);
 
+  const sendBirthday = async ({
+    to,
+    name,
+    couponCode,
+  }: {
+    to: string;
+    name: string;
+    couponCode?: string | undefined;
+  }) => {
+    const body = couponCode
+      ? `Feliz aniversário, ${name}! 🎂 Use o cupom ${couponCode} na sua próxima compra.`
+      : `Feliz aniversário, ${name}! 🎂 Desejamos um dia incrível.`;
+    const result = await ctx.whatsapp.sendMessage({ to, body });
+    return result;
+  };
+
   registerTool(
     server,
     "send_birthday_message",
@@ -27,12 +43,26 @@ export function registerWhatsAppTools(server: McpServer, ctx: WhatsAppToolsConte
         couponCode: z.string().optional().describe("Optional birthday coupon code"),
       },
     },
-    async ({ to, name, couponCode }) => {
-      const body = couponCode
-        ? `Feliz aniversário, ${name}! 🎂 Use o cupom ${couponCode} na sua próxima compra.`
-        : `Feliz aniversário, ${name}! 🎂 Desejamos um dia incrível.`;
-      const result = await ctx.whatsapp.sendMessage({ to, body });
+    async (args) => {
+      const result = await sendBirthday(args);
       return { tool: "send_birthday_message", ...result };
+    },
+  );
+
+  registerTool(
+    server,
+    "send_birthday",
+    {
+      description: "Send a birthday WhatsApp message (Master Prompt alias of send_birthday_message)",
+      inputSchema: {
+        to: z.string().describe("Recipient phone number in E.164 format"),
+        name: z.string().describe("Recipient name"),
+        couponCode: z.string().optional().describe("Optional birthday coupon code"),
+      },
+    },
+    async (args) => {
+      const result = await sendBirthday(args);
+      return { tool: "send_birthday", ...result };
     },
   );
 
@@ -138,6 +168,58 @@ export function registerWhatsAppTools(server: McpServer, ctx: WhatsAppToolsConte
       const body = `✅ Pedido ${orderId} confirmado! Total: ${total}.${itemList}`;
       const result = await ctx.whatsapp.sendMessage({ to, body });
       return { tool: "order_confirmation", orderId, ...result };
+    },
+  );
+
+  registerTool(
+    server,
+    "list_templates",
+    {
+      description: "List WhatsApp message templates available to the business account",
+      inputSchema: {},
+    },
+    async () => {
+      const templates = await ctx.whatsapp.listTemplates();
+      return { tool: "list_templates", templates };
+    },
+  );
+
+  registerTool(
+    server,
+    "get_message_status",
+    {
+      description: "Get delivery status for a previously sent WhatsApp message",
+      inputSchema: {
+        messageId: z.string().min(1).describe("WhatsApp message ID"),
+      },
+    },
+    async ({ messageId }) => {
+      const status = await ctx.whatsapp.getMessageStatus(messageId);
+      return { tool: "get_message_status", messageId, status };
+    },
+  );
+
+  registerTool(
+    server,
+    "validate_webhook",
+    {
+      description: "Validate Meta WhatsApp webhook verification challenge",
+      inputSchema: {
+        mode: z.string().optional().describe("hub.mode"),
+        verifyToken: z.string().describe("hub.verify_token"),
+        challenge: z.string().optional().describe("hub.challenge"),
+      },
+    },
+    async ({ mode, verifyToken, challenge }) => {
+      const validationInput: {
+        verifyToken: string;
+        mode?: string;
+        challenge?: string;
+      } = { verifyToken };
+      if (mode !== undefined) validationInput.mode = mode;
+      if (challenge !== undefined) validationInput.challenge = challenge;
+      const result = await ctx.whatsapp.validateWebhook(validationInput);
+      return { tool: "validate_webhook", ...result };
     },
   );
 }

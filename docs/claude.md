@@ -1,6 +1,6 @@
 # Claude Desktop — MCP Client Integration
 
-Connect Marketing Brain to [Claude Desktop](https://claude.ai/download).
+Connect Marketing Brain to [Claude Desktop](https://claude.ai/download) via **StdioServerTransport** (sem porta HTTP).
 
 ## Prerequisites
 
@@ -16,9 +16,9 @@ cp .env.example .env
 |----|------|
 | macOS | `~/Library/Application Support/Claude/claude_desktop_config.json` |
 | Windows | `%APPDATA%\Claude\claude_desktop_config.json` |
-| Linux | `~/.config/Claude/claude_desktop_config.json` (if supported by your build) |
+| Linux | `~/.config/Claude/claude_desktop_config.json` (se suportado) |
 
-## Example
+## Example (mock / local)
 
 Replace `ROOT` with the absolute monorepo path:
 
@@ -30,11 +30,15 @@ Replace `ROOT` with the absolute monorepo path:
       "args": ["ROOT/mcp-google-ads/dist/index.js"],
       "cwd": "ROOT",
       "env": {
-        "GOOGLE_ADS_CLIENT_ID": "your-client-id",
-        "GOOGLE_ADS_CLIENT_SECRET": "your-client-secret",
-        "GOOGLE_ADS_REFRESH_TOKEN": "your-refresh-token",
-        "GOOGLE_ADS_DEVELOPER_TOKEN": "your-developer-token",
-        "GOOGLE_ADS_CUSTOMER_ID": "your-customer-id"
+        "MCP_STDIO_SAFE": "true",
+        "GOOGLE_ADS_CLIENT_ID": "dev-client-id",
+        "GOOGLE_ADS_CLIENT_SECRET": "dev-client-secret",
+        "GOOGLE_ADS_REFRESH_TOKEN": "dev-refresh-token",
+        "GOOGLE_ADS_DEVELOPER_TOKEN": "dev-developer-token",
+        "GOOGLE_ADS_CUSTOMER_ID": "1234567890",
+        "GOOGLE_ADS_SKIP_AUTH_VALIDATE": "true",
+        "GOOGLE_ADS_FORCE_MOCK": "true",
+        "GOOGLE_ADS_LIVE_AUTH": "0"
       }
     },
     "marketing-brain-meta-ads": {
@@ -42,8 +46,11 @@ Replace `ROOT` with the absolute monorepo path:
       "args": ["ROOT/mcp-meta-ads/dist/index.js"],
       "cwd": "ROOT",
       "env": {
-        "META_ACCESS_TOKEN": "your-access-token",
-        "META_AD_ACCOUNT_ID": "act_XXXXXXXX"
+        "MCP_STDIO_SAFE": "true",
+        "META_ACCESS_TOKEN": "dev-meta-token",
+        "META_AD_ACCOUNT_ID": "act_dev",
+        "META_SKIP_AUTH_VALIDATE": "true",
+        "META_FORCE_MOCK": "true"
       }
     },
     "marketing-brain-whatsapp": {
@@ -51,43 +58,31 @@ Replace `ROOT` with the absolute monorepo path:
       "args": ["ROOT/mcp-whatsapp/dist/server.js"],
       "cwd": "ROOT",
       "env": {
-        "WHATSAPP_TOKEN": "your-token",
-        "WHATSAPP_PHONE_NUMBER_ID": "your-phone-number-id"
+        "MCP_STDIO_SAFE": "true",
+        "WHATSAPP_TOKEN": "dev-wa-token",
+        "WHATSAPP_PHONE_NUMBER_ID": "dev-phone",
+        "WHATSAPP_STUB": "true"
       }
-    },
-    "marketing-brain-insights": {
-      "command": "node",
-      "args": ["ROOT/mcp-insights/dist/server.js"],
-      "cwd": "ROOT"
-    },
-    "marketing-brain-ai-agent": {
-      "command": "node",
-      "args": ["ROOT/mcp-ai-agent/dist/server.js"],
-      "cwd": "ROOT"
-    },
-    "marketing-brain-workflows": {
-      "command": "node",
-      "args": ["ROOT/mcp-workflows/dist/server.js"],
-      "cwd": "ROOT"
     }
   }
 }
 ```
 
-See also [`docs/mcp-config.example.json`](mcp-config.example.json).
+Template completo: [`mcp-config.example.json`](mcp-config.example.json).
 
 ## Verify
 
-1. Fully quit and reopen Claude Desktop.
-2. Open a chat and check the MCP / tools panel for Marketing Brain servers.
-3. Run the local harness:
+1. Restart Claude Desktop.
+2. Confirm MCP servers connected.
+3. Ask Claude to list campaigns (`list_campaigns`) or list WhatsApp templates (`list_templates`).
+
+Local harness:
 
 ```bash
-npm run mcp:smoke
-npm run mcp:tools
+npm run mcp:client
 ```
 
 ## Notes
 
-- `command` must resolve to Node.js on Claude’s PATH (use full path to `node` if needed).
-- Do not put real secrets in git — use local config only.
+- Logs de arranque ficam em stderr; o processo à espera no stdin é **esperado**.
+- Live APIs: substitua placeholders por secrets reais e remova flags mock/stub.
