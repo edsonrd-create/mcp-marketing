@@ -1,4 +1,4 @@
-# Configuration
+# Configuration — Marketing Brain MCP v1.0.0
 
 Marketing Brain validates environment variables on boot via **EnvValidator** (Zod)
 and exposes them through **ConfigService**.
@@ -42,7 +42,7 @@ npm run dev
 | `GOOGLE_ADS_CUSTOMER_ID` | for Google Ads | Ads customer ID |
 | `GOOGLE_ADS_LOGIN_CUSTOMER_ID` | no | MCC login customer id |
 | `GOOGLE_ADS_SKIP_AUTH_VALIDATE` | no | `true` for smoke tests |
-| `GOOGLE_ADS_LIVE_AUTH` | no | `1` for live OAuth + API |
+| `GOOGLE_ADS_LIVE_AUTH` | no | `1` / `true` for live OAuth + API |
 | `GOOGLE_ADS_FORCE_MOCK` | no | `true` to force mock data layer |
 
 See [GOOGLE_ADS.md](GOOGLE_ADS.md) for the full provider guide.
@@ -54,6 +54,7 @@ See [GOOGLE_ADS.md](GOOGLE_ADS.md) for the full provider guide.
 | `META_ACCESS_TOKEN` | for Meta Ads MCP | Graph API access token |
 | `META_AD_ACCOUNT_ID` | for Meta Ads MCP | Ad account ID (`act_...`) |
 | `META_SKIP_AUTH_VALIDATE` | no | `true` for smoke tests |
+| `META_FORCE_MOCK` | no | `true` to force mock data layer |
 
 ### WhatsApp
 
@@ -61,11 +62,17 @@ See [GOOGLE_ADS.md](GOOGLE_ADS.md) for the full provider guide.
 |----------|----------|-------------|
 | `WHATSAPP_TOKEN` | for WhatsApp MCP | Cloud API token |
 | `WHATSAPP_PHONE_NUMBER_ID` | for WhatsApp MCP | Phone number ID |
+| `WHATSAPP_API_VERSION` | no | Default `v21.0` |
 | `WHATSAPP_STUB` | no | `true` to skip Graph API (local MCP smoke/tools) |
+| `WHATSAPP_VERIFY_TOKEN` | for live webhook validation | Must match Meta webhook verify token |
 
 ### Optional Firebase
 
-`FIREBASE_PROJECT_ID`, `FIREBASE_CLIENT_EMAIL`, `FIREBASE_PRIVATE_KEY`
+`FIREBASE_PROJECT_ID`, `FIREBASE_CLIENT_EMAIL`, `FIREBASE_PRIVATE_KEY` — reservadas para persistência futura; **não lidas pelo runtime** em v1.0.0.
+
+### Database
+
+`DATABASE_MODE` aceita `memory` \| `sqlite` \| `postgres` no schema Zod. **Implementado:** apenas `memory`.
 
 ## Validation behaviour
 

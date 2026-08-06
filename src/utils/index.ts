@@ -8,3 +8,5 @@ export function assertDefined<T>(value: T | null | undefined, message: string): 
 export function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
+
+export { withRetry, type RetryOptions } from "./retry.js";

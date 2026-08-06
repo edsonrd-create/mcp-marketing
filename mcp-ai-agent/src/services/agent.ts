@@ -1,4 +1,5 @@
 import { randomUUID } from "node:crypto";
+import { AppError, ErrorCode } from "@mcp-marketing/shared";
 import type { AgentStore, AuditLogEntry, ChatMessage, PendingAction } from "./store.js";
 
 export interface ChatResponse {
@@ -119,10 +120,13 @@ export function listPendingApprovals(store: AgentStore): PendingAction[] {
 export function confirmAction(store: AgentStore, actionId: string): PendingAction {
   const action = store.pendingActions.find((a) => a.id === actionId);
   if (!action) {
-    throw new Error(`Action not found: ${actionId}`);
+    throw new AppError({ code: ErrorCode.NOT_FOUND, message: `Action not found: ${actionId}` });
   }
   if (action.status !== "pending") {
-    throw new Error(`Action ${actionId} is already ${action.status}`);
+    throw new AppError({
+      code: ErrorCode.VALIDATION,
+      message: `Action ${actionId} is already ${action.status}`,
+    });
   }
   action.status = "confirmed";
   action.resolvedAt = new Date().toISOString();
@@ -133,10 +137,13 @@ export function confirmAction(store: AgentStore, actionId: string): PendingActio
 export function cancelAction(store: AgentStore, actionId: string): PendingAction {
   const action = store.pendingActions.find((a) => a.id === actionId);
   if (!action) {
-    throw new Error(`Action not found: ${actionId}`);
+    throw new AppError({ code: ErrorCode.NOT_FOUND, message: `Action not found: ${actionId}` });
   }
   if (action.status !== "pending") {
-    throw new Error(`Action ${actionId} is already ${action.status}`);
+    throw new AppError({
+      code: ErrorCode.VALIDATION,
+      message: `Action ${actionId} is already ${action.status}`,
+    });
   }
   action.status = "cancelled";
   action.resolvedAt = new Date().toISOString();

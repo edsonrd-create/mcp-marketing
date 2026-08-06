@@ -1,6 +1,6 @@
 import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { structuredResult, withToolErrorHandling } from "@mcp-marketing/shared";
+import { structuredResult, withToolErrorHandling, withToolExecutionLogging } from "@mcp-marketing/shared";
 import { z } from "zod";
 import type { GoogleAdsProvider } from "../services/GoogleAdsProvider.js";
 import {
@@ -18,8 +18,9 @@ import {
 
 type ToolHandler = (args: Record<string, unknown>) => Promise<CallToolResult>;
 
-function toolHandler(handler: ToolHandler): ToolHandler {
-  return withToolErrorHandling(handler) as ToolHandler;
+function toolHandler(name: string, handler: ToolHandler): ToolHandler {
+  const guarded = withToolErrorHandling(handler) as ToolHandler;
+  return async (args) => withToolExecutionLogging(name, () => guarded(args));
 }
 
 /** MCP tool names for the Google Ads provider (Sprint 2). */
@@ -43,7 +44,7 @@ export function registerGoogleAdsTools(server: McpServer, provider: GoogleAdsPro
     "list_campaigns",
     "List all Google Ads campaigns for the configured customer",
     listCampaignsSchema.shape,
-    toolHandler(async (raw) => {
+    toolHandler("list_campaigns", async (raw) => {
       listCampaignsSchema.parse(raw);
       const campaigns = await provider.listCampaigns();
       return structuredResult({
@@ -58,7 +59,7 @@ export function registerGoogleAdsTools(server: McpServer, provider: GoogleAdsPro
     "get_campaign",
     "Get a Google Ads campaign by ID",
     getCampaignSchema.shape,
-    toolHandler(async (raw) => {
+    toolHandler("get_campaign", async (raw) => {
       const { campaign_id } = getCampaignSchema.parse(raw);
       const campaign = await provider.getCampaign(campaign_id);
       return structuredResult({ campaign, customerId: provider.getCustomerId() });
@@ -73,7 +74,7 @@ export function registerGoogleAdsTools(server: McpServer, provider: GoogleAdsPro
       budget_micros: z.number().int().positive().describe("Daily budget in micros"),
       channel_type: z.string().optional().describe("Channel type, e.g. SEARCH"),
     },
-    toolHandler(async (raw) => {
+    toolHandler("create_campaign", async (raw) => {
       const input = createCampaignSchema.parse(raw);
       const campaign = await provider.createCampaign({
         name: input.name,
@@ -88,7 +89,7 @@ export function registerGoogleAdsTools(server: McpServer, provider: GoogleAdsPro
     "pause_campaign",
     "Pause a Google Ads campaign",
     pauseCampaignSchema.shape,
-    toolHandler(async (raw) => {
+    toolHandler("pause_campaign", async (raw) => {
       const { campaign_id } = pauseCampaignSchema.parse(raw);
       const campaign = await provider.pauseCampaign(campaign_id);
       return structuredResult({ campaign, action: "paused", customerId: provider.getCustomerId() });
@@ -99,7 +100,7 @@ export function registerGoogleAdsTools(server: McpServer, provider: GoogleAdsPro
     "enable_campaign",
     "Enable a paused Google Ads campaign",
     enableCampaignSchema.shape,
-    toolHandler(async (raw) => {
+    toolHandler("enable_campaign", async (raw) => {
       const { campaign_id } = enableCampaignSchema.parse(raw);
       const campaign = await provider.enableCampaign(campaign_id);
       return structuredResult({ campaign, action: "enabled", customerId: provider.getCustomerId() });
@@ -110,7 +111,7 @@ export function registerGoogleAdsTools(server: McpServer, provider: GoogleAdsPro
     "update_budget",
     "Update the daily budget for a Google Ads campaign",
     updateBudgetSchema.shape,
-    toolHandler(async (raw) => {
+    toolHandler("update_budget", async (raw) => {
       const { campaign_id, budget_micros } = updateBudgetSchema.parse(raw);
       const campaign = await provider.updateBudget(campaign_id, budget_micros);
       return structuredResult({ campaign, customerId: provider.getCustomerId() });
@@ -124,7 +125,7 @@ export function registerGoogleAdsTools(server: McpServer, provider: GoogleAdsPro
       campaign_id: z.string().optional().describe("Optional campaign ID filter"),
       date_range: z.string().optional().describe("Date range label, e.g. LAST_30_DAYS"),
     },
-    toolHandler(async (raw) => {
+    toolHandler("campaign_report", async (raw) => {
       const input = campaignReportSchema.parse(raw);
       const reportInput: { dateRange: string; campaignId?: string } = {
         dateRange: input.date_range,
@@ -148,7 +149,7 @@ export function registerGoogleAdsTools(server: McpServer, provider: GoogleAdsPro
       query: z.string().min(1).describe("Seed keyword query"),
       limit: z.number().int().min(1).max(50).optional().describe("Max results"),
     },
-    toolHandler(async (raw) => {
+    toolHandler("search_keywords", async (raw) => {
       const input = searchKeywordsSchema.parse(raw);
       const keywords = await provider.searchKeywords(input.query, input.limit);
       return structuredResult({ keywords, customerId: provider.getCustomerId() });
@@ -159,7 +160,7 @@ export function registerGoogleAdsTools(server: McpServer, provider: GoogleAdsPro
     "list_customers",
     "List Google Ads customer accounts accessible to the configured credentials",
     listCustomersSchema.shape,
-    toolHandler(async (raw) => {
+    toolHandler("list_customers", async (raw) => {
       listCustomersSchema.parse(raw);
       const customers = await provider.listCustomers();
       return structuredResult({ customers, customerId: provider.getCustomerId() });
@@ -170,7 +171,7 @@ export function registerGoogleAdsTools(server: McpServer, provider: GoogleAdsPro
     "account_info",
     "Get Google Ads account information for the configured customer ID",
     accountInfoSchema.shape,
-    toolHandler(async (raw) => {
+    toolHandler("account_info", async (raw) => {
       accountInfoSchema.parse(raw);
       const account = await provider.accountInfo();
       return structuredResult({ account, customerId: provider.getCustomerId() });
