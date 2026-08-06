@@ -1,24 +1,21 @@
 # Changelog
 
-## [1.1.0] - 2026-08-03 — LTS
+## [1.0.0] - 2026-08-03 — Production Ready
 
 ### Added
-- Marketing Brain CLI (`marketing-brain`) with doctor, start, validate, live, status, update, version
-- `create-marketing-brain` project scaffolder
-- Operational scripts: build-info, package-release, system-validation, mcp-smoke, mcp-tools, live-validation, compat-init
-- Release engineering: `VERSION`, `BUILD_INFO.json`, `RELEASE_MANIFEST.json`
-- Docker: `Dockerfile`, `docker-compose.yml`, healthcheck, Docker README
-- GitHub: issue templates, PR template, CODEOWNERS, SECURITY, CONTRIBUTING, SUPPORT
-- Licensing: LICENSE, NOTICE, THIRD_PARTY_LICENSES.md
-- CI/CD: GitHub Actions for build, lint, typecheck, test, validate, and release packaging
-- Config profiles (`config/default.json`, `development.json`, `production.json`)
-- `.env.example` with Google Ads, Meta, WhatsApp, and database variables
-- Docs: QUICKSTART, CLI, CONFIGURATION, DOCKER, `LTS_CERTIFICATION.md`
+- Certificação **v1.0.0 Production Ready** (71 MCP tools, 6 servers)
+- Relatórios: `CODE_AUDIT.md`, `TEST_REPORT.md`, `PRODUCTION_READINESS_REPORT.md`, `FINAL_STATUS.md`
+- Core MCP Framework, providers Google Ads + Meta Ads, WhatsApp/AI/Workflows/Insights
+- CLI `marketing-brain`, Docker, CI, docs de instalação e configuração
 
-### MCP Servers (52 tools)
-- Google Ads (10), Meta Ads (8), WhatsApp (6), Insights (8), AI Agent (7), Workflows (13)
+### Fixed
+- Shared build `tsc --build --force` (evita `dist/` stale)
+- WhatsApp: verify token via env; erros Graph sanitizados
+- HTTP: `details` de erro só em `VALIDATION`
+- Google Ads: lazy-load do SDK live (mock cold start mais rápido)
+- Workflows / AI Agent: erros via `AppError`
+- Remoção de dep não usada (`long`); `google-auth-library` no root
+- Limpeza de shims/orfaos e alinhamento de env/docs
 
 ### Requirements
 - Node.js >= 22
-- TypeScript ESM monorepo
-- Cross-platform: Windows, Linux, macOS

@@ -6,13 +6,19 @@ import { loadWhatsAppEnv } from "./config/env.js";
 import { createStubWhatsAppService, createWhatsAppService } from "./services/whatsapp.js";
 import { registerWhatsAppTools } from "./tools/index.js";
 
-const VERSION = "1.1.0";
+const VERSION = "1.0.0";
 const logger = createLogger("mcp-whatsapp");
 
 export function createWhatsAppMcpServer(): McpServer {
   const env = loadWhatsAppEnv();
   const useStub = process.env.WHATSAPP_STUB === "true";
-  const whatsapp = useStub ? createStubWhatsAppService() : createWhatsAppService({ env });
+  const verifyToken = env.WHATSAPP_VERIFY_TOKEN ?? process.env.WHATSAPP_VERIFY_TOKEN;
+  const whatsapp = useStub
+    ? createStubWhatsAppService(verifyToken ? { verifyToken } : undefined)
+    : createWhatsAppService({
+        env,
+        ...(verifyToken ? { verifyToken } : {}),
+      });
 
   if (useStub) {
     logger.warn("Using WhatsApp stub service (WHATSAPP_STUB=true) — no Graph API calls");

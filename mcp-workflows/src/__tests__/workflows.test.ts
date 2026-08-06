@@ -4,6 +4,8 @@ import {
   createEmptyWorkflowsStore,
   createWorkflowFromTemplate,
   listWorkflowTemplates,
+  pauseWorkflow,
+  resumeWorkflow,
   runDueWorkflows,
   runWorkflow,
 } from "../services/workflows.js";
@@ -43,5 +45,18 @@ describe("workflows", () => {
     const executions = runDueWorkflows(store, new Date("2026-01-01T00:00:00.000Z"));
     expect(executions.length).toBe(1);
     expect(executions[0]?.status).toBe("completed");
+  });
+
+  it("resumes a paused workflow back to active", () => {
+    const store = createEmptyWorkflowsStore();
+    const workflow = createWorkflowFromTemplate(store, "tpl-welcome", { status: "active" });
+    pauseWorkflow(store, workflow.id);
+    expect(store.workflows.find((w) => w.id === workflow.id)?.status).toBe("paused");
+
+    const resumed = resumeWorkflow(store, workflow.id);
+    expect(resumed.status).toBe("active");
+
+    const execution = runWorkflow(store, workflow.id);
+    expect(execution.status).toBe("completed");
   });
 });

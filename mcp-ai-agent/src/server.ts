@@ -4,7 +4,7 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { registerAiAgentTools } from "./tools/index.js";
 
-const VERSION = "1.1.0";
+const VERSION = "1.0.0";
 const logger = createLogger("mcp-ai-agent");
 
 export function createAiAgentMcpServer(): McpServer {

@@ -1,6 +1,6 @@
 /**
  * Tool registry placeholder for the HTTP/app shell.
- * MCP tools remain in mcp-* packages (52 tools) — do not duplicate here.
+ * MCP tools remain in mcp-* packages (71 tools) — do not duplicate here.
  */
 export const APP_TOOL_MODULES = [
   "google-ads",
