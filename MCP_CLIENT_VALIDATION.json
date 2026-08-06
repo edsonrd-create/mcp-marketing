@@ -1,0 +1,178 @@
+{
+  "version": "1.0.0",
+  "generatedAt": "2026-08-05T01:22:41.549Z",
+  "transport": "stdio",
+  "expectedTools": 71,
+  "discoveredTools": 71,
+  "serversOk": 6,
+  "serversTotal": 6,
+  "rows": [
+    {
+      "server": "@mcp-marketing/google-ads",
+      "ok": true,
+      "error": null,
+      "tools": 10,
+      "toolNames": [
+        "list_campaigns",
+        "get_campaign",
+        "create_campaign",
+        "pause_campaign",
+        "enable_campaign",
+        "update_budget",
+        "campaign_report",
+        "search_keywords",
+        "list_customers",
+        "account_info"
+      ],
+      "handshake": true,
+      "toolCall": {
+        "name": "list_campaigns",
+        "ms": 3,
+        "summary": "{ \"campaigns\": [ { \"id\": \"1001\", \"name\": \"Brand Awareness\", \"status\": \"ENABLED\", \"budgetMicros\": 50000000, \"channelType\": \"SEARCH\" }, { \"id\": \"1002\", \"name\": \"Retargeting\", \"status\": \"PAUSED\", \"budget",
+        "isError": false
+      },
+      "ms": 188
+    },
+    {
+      "server": "@mcp-marketing/meta-ads",
+      "ok": true,
+      "error": null,
+      "tools": 14,
+      "toolNames": [
+        "list_accounts",
+        "list_campaigns",
+        "get_campaign",
+        "create_campaign",
+        "pause_campaign",
+        "enable_campaign",
+        "resume_campaign",
+        "update_budget",
+        "get_insights",
+        "get_metrics",
+        "list_audiences",
+        "create_audience",
+        "create_ad",
+        "account_info"
+      ],
+      "handshake": true,
+      "toolCall": {
+        "name": "list_campaigns",
+        "ms": 3,
+        "summary": "{ \"campaigns\": [ { \"id\": \"2001\", \"name\": \"Meta Prospecting\", \"status\": \"ACTIVE\", \"objective\": \"OUTCOME_TRAFFIC\", \"dailyBudget\": 100 }, { \"id\": \"2002\", \"name\": \"Meta Retargeting\", \"status\": \"PAUSED\", \"",
+        "isError": false
+      },
+      "ms": 170
+    },
+    {
+      "server": "@mcp-marketing/whatsapp",
+      "ok": true,
+      "error": null,
+      "tools": 10,
+      "toolNames": [
+        "send_birthday_message",
+        "send_birthday",
+        "send_coupon",
+        "send_campaign",
+        "send_template",
+        "schedule_message",
+        "order_confirmation",
+        "list_templates",
+        "get_message_status",
+        "validate_webhook"
+      ],
+      "handshake": true,
+      "toolCall": {
+        "name": "list_templates",
+        "ms": 2,
+        "summary": "{ \"tool\": \"list_templates\", \"templates\": [ { \"name\": \"hello_world\", \"language\": \"en_US\", \"status\": \"APPROVED\", \"category\": \"UTILITY\" }, { \"name\": \"birthday_offer\", \"language\": \"pt_BR\", \"status\": \"APPR",
+        "isError": false
+      },
+      "ms": 174
+    },
+    {
+      "server": "@mcp-marketing/insights",
+      "ok": true,
+      "error": null,
+      "tools": 8,
+      "toolNames": [
+        "analyze_insights",
+        "get_health_scores",
+        "list_recommendations",
+        "get_executive_dashboard",
+        "list_timeline_events",
+        "record_timeline_event",
+        "get_health_center",
+        "generate_report"
+      ],
+      "handshake": true,
+      "toolCall": {
+        "name": "get_executive_dashboard",
+        "ms": 4,
+        "summary": "{ \"tool\": \"get_executive_dashboard\", \"dashboard\": { \"summary\": { \"campaigns\": 0, \"totalSpend\": 0, \"totalRevenue\": 0, \"totalConversions\": 0, \"totalClicks\": 0, \"overallRoas\": 0, \"overallCpa\": 0, \"overal",
+        "isError": false
+      },
+      "ms": 151
+    },
+    {
+      "server": "@mcp-marketing/ai-agent",
+      "ok": true,
+      "error": null,
+      "tools": 14,
+      "toolNames": [
+        "chat",
+        "list_pending_approvals",
+        "confirm_action",
+        "cancel_action",
+        "get_agent_history",
+        "get_ai_summary",
+        "list_audit_logs",
+        "analyze_campaigns",
+        "optimize_budget",
+        "generate_report",
+        "analyze_customers",
+        "suggest_actions",
+        "summarize_account",
+        "marketing_chat"
+      ],
+      "handshake": true,
+      "toolCall": {
+        "name": "get_ai_summary",
+        "ms": 4,
+        "summary": "{ \"tool\": \"get_ai_summary\", \"summary\": { \"totalMessages\": 50, \"pendingApprovals\": 0, \"confirmedActions\": 7, \"cancelledActions\": 7, \"recentTopics\": [ \"please launch campaign Summer Sale\", \"hello\", \"ple",
+        "isError": false
+      },
+      "ms": 171
+    },
+    {
+      "server": "@mcp-marketing/workflows",
+      "ok": true,
+      "error": null,
+      "tools": 15,
+      "toolNames": [
+        "list_workflows",
+        "create_workflow",
+        "update_workflow",
+        "duplicate_workflow",
+        "pause_workflow",
+        "delete_workflow",
+        "run_workflow",
+        "execute_workflow",
+        "resume_workflow",
+        "run_due_workflows",
+        "recover_workflow_execution",
+        "list_workflow_templates",
+        "create_workflow_from_template",
+        "list_workflow_executions",
+        "list_workflow_audit_logs"
+      ],
+      "handshake": true,
+      "toolCall": {
+        "name": "list_workflows",
+        "ms": 3,
+        "summary": "{ \"tool\": \"list_workflows\", \"workflows\": [ { \"id\": \"73ec5051-61ef-4521-9bb2-3e5f68bb8e82\", \"name\": \"Birthday Smoke\", \"description\": \"Send a birthday WhatsApp message with optional coupon\", \"status\": \"",
+        "isError": false
+      },
+      "ms": 166
+    }
+  ]
+}

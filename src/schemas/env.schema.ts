@@ -27,16 +27,35 @@ export const appEnvSchema = z.object({
   GOOGLE_ADS_REFRESH_TOKEN: optionalString,
   GOOGLE_ADS_DEVELOPER_TOKEN: optionalString,
   GOOGLE_ADS_CUSTOMER_ID: optionalString,
+  GOOGLE_ADS_LOGIN_CUSTOMER_ID: optionalString,
   GOOGLE_ADS_SKIP_AUTH_VALIDATE: z
     .enum(["true", "false"])
     .optional()
     .transform((v) => v === "true"),
+  GOOGLE_ADS_FORCE_MOCK: z
+    .enum(["true", "false"])
+    .optional()
+    .transform((v) => v === "true"),
+  GOOGLE_ADS_LIVE_AUTH: z
+    .enum(["0", "1", "true", "false"])
+    .optional()
+    .transform((v) => v === "1" || v === "true"),
 
   META_ACCESS_TOKEN: optionalString,
   META_AD_ACCOUNT_ID: optionalString,
+  META_SKIP_AUTH_VALIDATE: z
+    .enum(["true", "false"])
+    .optional()
+    .transform((v) => v === "true"),
+  META_FORCE_MOCK: z
+    .enum(["true", "false"])
+    .optional()
+    .transform((v) => v === "true"),
 
   WHATSAPP_TOKEN: optionalString,
   WHATSAPP_PHONE_NUMBER_ID: optionalString,
+  WHATSAPP_API_VERSION: optionalString,
+  WHATSAPP_VERIFY_TOKEN: optionalString,
   WHATSAPP_STUB: z
     .enum(["true", "false"])
     .optional()

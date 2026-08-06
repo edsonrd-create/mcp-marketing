@@ -1,20 +1,28 @@
 # Cursor — MCP Client Integration
 
-Connect Marketing Brain MCP servers to [Cursor](https://cursor.com).
+Connect Marketing Brain MCP servers to [Cursor](https://cursor.com) via **StdioServerTransport**.
 
 ## Prerequisites
 
 ```bash
 npm install
 npm run build
-cp .env.example .env   # fill credentials for live use
+cp .env.example .env   # fill credentials for live use; mock flags OK for local
 ```
 
-## Cursor MCP config
+## Project example config
 
-Add servers under **Cursor Settings → MCP**, or edit `~/.cursor/mcp.json` (user) / `.cursor/mcp.json` (project).
+Copy the example into the project (or merge into user `~/.cursor/mcp.json`):
 
-Example (absolute paths — adjust `ROOT`):
+```bash
+cp .cursor/mcp.json.example .cursor/mcp.json
+```
+
+O ficheiro [`.cursor/mcp.json.example`](../.cursor/mcp.json.example) já usa `${workspaceFolder}` e **mock env** seguro para listar/executar tools sem credenciais live.
+
+## Cursor MCP config (manual)
+
+**Cursor Settings → MCP**, ou editar `~/.cursor/mcp.json` / `.cursor/mcp.json`.
 
 ```json
 {
@@ -24,65 +32,46 @@ Example (absolute paths — adjust `ROOT`):
       "args": ["ROOT/mcp-google-ads/dist/index.js"],
       "cwd": "ROOT",
       "env": {
-        "GOOGLE_ADS_CLIENT_ID": "your-client-id",
-        "GOOGLE_ADS_CLIENT_SECRET": "your-client-secret",
-        "GOOGLE_ADS_REFRESH_TOKEN": "your-refresh-token",
-        "GOOGLE_ADS_DEVELOPER_TOKEN": "your-developer-token",
-        "GOOGLE_ADS_CUSTOMER_ID": "your-customer-id"
+        "MCP_STDIO_SAFE": "true",
+        "GOOGLE_ADS_CLIENT_ID": "dev-client-id",
+        "GOOGLE_ADS_CLIENT_SECRET": "dev-client-secret",
+        "GOOGLE_ADS_REFRESH_TOKEN": "dev-refresh-token",
+        "GOOGLE_ADS_DEVELOPER_TOKEN": "dev-developer-token",
+        "GOOGLE_ADS_CUSTOMER_ID": "1234567890",
+        "GOOGLE_ADS_SKIP_AUTH_VALIDATE": "true",
+        "GOOGLE_ADS_FORCE_MOCK": "true",
+        "GOOGLE_ADS_LIVE_AUTH": "0"
       }
-    },
-    "marketing-brain-meta-ads": {
-      "command": "node",
-      "args": ["ROOT/mcp-meta-ads/dist/index.js"],
-      "cwd": "ROOT",
-      "env": {
-        "META_ACCESS_TOKEN": "your-access-token",
-        "META_AD_ACCOUNT_ID": "act_XXXXXXXX"
-      }
-    },
-    "marketing-brain-whatsapp": {
-      "command": "node",
-      "args": ["ROOT/mcp-whatsapp/dist/server.js"],
-      "cwd": "ROOT",
-      "env": {
-        "WHATSAPP_TOKEN": "your-token",
-        "WHATSAPP_PHONE_NUMBER_ID": "your-phone-number-id"
-      }
-    },
-    "marketing-brain-insights": {
-      "command": "node",
-      "args": ["ROOT/mcp-insights/dist/server.js"],
-      "cwd": "ROOT"
-    },
-    "marketing-brain-ai-agent": {
-      "command": "node",
-      "args": ["ROOT/mcp-ai-agent/dist/server.js"],
-      "cwd": "ROOT"
-    },
-    "marketing-brain-workflows": {
-      "command": "node",
-      "args": ["ROOT/mcp-workflows/dist/server.js"],
-      "cwd": "ROOT"
     }
   }
 }
 ```
 
-Full template without secrets: [`docs/mcp-config.example.json`](mcp-config.example.json).
+Substitua `ROOT` pelo caminho absoluto do repositório (ex.: `E:\\marketing-brain`).
 
-## Verify
+**Não use** `ROOT/dist/index.js` — use `ROOT/mcp-google-ads/dist/index.js`. Template completo: [`mcp-config.example.json`](mcp-config.example.json).
 
-1. Restart Cursor / reload MCP servers.
-2. Confirm **52 tools** across the six servers.
-3. Local harness (no live credentials required for structure + stub):
+## Validate (local harness ≡ Handshake + listTools + callTool)
 
 ```bash
-npm run mcp:smoke
-npm run mcp:tools
+npm run mcp:smoke      # init + listTools (71)
+npm run mcp:client     # handshake + 1 tool call / server
+npm run mcp:discover   # schemas → MCP_DISCOVERY_REPORT.md
+npm run mcp:tools      # call each tool → MCP_TOOLS_REPORT.md
 ```
 
-## Notes
+No Cursor:
 
-- Transport is **stdio** (no HTTP port).
-- Prefer `env` in MCP config over baking secrets into images or commits.
-- For offline WhatsApp smoke: `WHATSAPP_STUB=true`.
+1. Reload MCP servers.
+2. Confirme os 6 servers online e **71 tools**.
+3. Execute p.ex. `list_campaigns` (Google) ou `list_templates` (WhatsApp stub).
+
+## Expected STDIO behaviour
+
+- Sem porta HTTP.
+- Logs de arranque/tools em **stderr**.
+- Processo à espera no stdin após o banner de health — **normal**.
+
+## Live credentials
+
+Para contas reais: remova `*_FORCE_MOCK` / `WHATSAPP_STUB`, preencha secrets no `.env` / config MCP, e use `GOOGLE_ADS_LIVE_AUTH=1` quando aplicável. Sem credenciais = **pendência operacional**.

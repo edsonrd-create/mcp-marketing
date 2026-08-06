@@ -1,6 +1,6 @@
 {
   "name": "@mcp-marketing/meta-ads",
-  "version": "1.1.0",
+  "version": "1.0.0",
   "type": "module",
   "bin": {
     "mcp-meta-ads": "./dist/index.js"
@@ -18,7 +18,7 @@
     "dev": "tsup --watch"
   },
   "dependencies": {
-    "@mcp-marketing/shared": "1.1.0",
+    "@mcp-marketing/shared": "1.0.0",
     "@modelcontextprotocol/sdk": "^1.10.0",
     "zod": "^3.24.2"
   },
