@@ -4,7 +4,14 @@
  * Validates Node, TypeScript, dependencies, .env, Google Ads / OpenAI env,
  * MCP SDK presence, and provider readiness (in-process, no client connect).
  */
+import { config as loadDotenv } from "dotenv";
 import { DoctorService } from "../src/services/doctor/DoctorService.ts";
+
+// Load local .env so doctor sees Google Ads / OpenAI / Meta / WhatsApp keys.
+// Secrets stay in process env only — never commit .env.
+if (process.env.SKIP_DOTENV_FILE !== "true") {
+  loadDotenv({ path: ".env" });
+}
 
 const doctor = new DoctorService(process.cwd());
 const report = await doctor.run(process.env);
