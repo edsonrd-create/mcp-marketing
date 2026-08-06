@@ -1,22 +1,21 @@
 import { AppError, ErrorCode } from "@mcp-marketing/shared";
 import type { GoogleAdsAuthManager } from "../auth/GoogleAdsAuthManager.js";
 import type { GoogleAdsCampaign } from "../schemas/types.js";
-import { LiveGoogleAdsClient } from "./LiveGoogleAdsClient.js";
+import type { LiveGoogleAdsClient } from "./LiveGoogleAdsClient.js";
 import { MockGoogleAdsStore } from "./MockGoogleAdsStore.js";
 import { withGoogleAdsLogging } from "./logging.js";
 
-type DataSource = MockGoogleAdsStore | LiveGoogleAdsClient;
-
 /**
  * Facade used by domain modules and MCP tools.
+ * Live Google Ads SDK is loaded only when live mode is enabled (faster mock cold start).
  */
 export class GoogleAdsProvider {
-  private readonly source: DataSource;
+  private readonly mockStore: MockGoogleAdsStore | null;
+  private liveClient: LiveGoogleAdsClient | null = null;
+  private liveClientPromise: Promise<LiveGoogleAdsClient> | null = null;
 
   constructor(private readonly auth: GoogleAdsAuthManager) {
-    this.source = auth.isLiveMode()
-      ? new LiveGoogleAdsClient(auth)
-      : new MockGoogleAdsStore(auth.getCustomerId());
+    this.mockStore = auth.isLiveMode() ? null : new MockGoogleAdsStore(auth.getCustomerId());
   }
 
   getCustomerId(): string {
@@ -32,23 +31,38 @@ export class GoogleAdsProvider {
   }
 
   private store(): MockGoogleAdsStore {
-    return this.source as MockGoogleAdsStore;
+    if (!this.mockStore) {
+      throw new AppError({
+        code: ErrorCode.INTERNAL,
+        message: "Mock Google Ads store unavailable in live mode",
+      });
+    }
+    return this.mockStore;
   }
 
-  private live(): LiveGoogleAdsClient {
-    return this.source as LiveGoogleAdsClient;
+  private async live(): Promise<LiveGoogleAdsClient> {
+    if (this.liveClient) {
+      return this.liveClient;
+    }
+    if (!this.liveClientPromise) {
+      this.liveClientPromise = import("./LiveGoogleAdsClient.js").then(({ LiveGoogleAdsClient }) => {
+        this.liveClient = new LiveGoogleAdsClient(this.auth);
+        return this.liveClient;
+      });
+    }
+    return this.liveClientPromise;
   }
 
   async listCampaigns() {
     return this.call("list_campaigns", async () =>
-      this.isLiveMode() ? this.live().listCampaigns() : this.store().listCampaigns(),
+      this.isLiveMode() ? (await this.live()).listCampaigns() : this.store().listCampaigns(),
     );
   }
 
   async getCampaign(campaignId: string) {
     return this.call("get_campaign", async () => {
       if (this.isLiveMode()) {
-        return this.live().getCampaign(campaignId);
+        return (await this.live()).getCampaign(campaignId);
       }
       const campaign = this.store().getCampaign(campaignId);
       if (!campaign) {
@@ -63,14 +77,16 @@ export class GoogleAdsProvider {
 
   async createCampaign(input: { name: string; budgetMicros: number; channelType: string }) {
     return this.call("create_campaign", async () =>
-      this.isLiveMode() ? this.live().createCampaign(input) : this.store().createCampaign(input),
+      this.isLiveMode()
+        ? (await this.live()).createCampaign(input)
+        : this.store().createCampaign(input),
     );
   }
 
   async pauseCampaign(campaignId: string) {
     return this.call("pause_campaign", async () => {
       if (this.isLiveMode()) {
-        return this.live().pauseCampaign(campaignId);
+        return (await this.live()).pauseCampaign(campaignId);
       }
       const campaign = this.store().setStatus(campaignId, "PAUSED");
       if (!campaign) {
@@ -86,7 +102,7 @@ export class GoogleAdsProvider {
   async enableCampaign(campaignId: string) {
     return this.call("enable_campaign", async () => {
       if (this.isLiveMode()) {
-        return this.live().enableCampaign(campaignId);
+        return (await this.live()).enableCampaign(campaignId);
       }
       const campaign = this.store().setStatus(campaignId, "ENABLED");
       if (!campaign) {
@@ -102,7 +118,7 @@ export class GoogleAdsProvider {
   async updateBudget(campaignId: string, budgetMicros: number) {
     return this.call("update_budget", async () => {
       if (this.isLiveMode()) {
-        return this.live().updateBudget(campaignId, budgetMicros);
+        return (await this.live()).updateBudget(campaignId, budgetMicros);
       }
       const campaign = this.store().updateBudget(campaignId, budgetMicros);
       if (!campaign) {
@@ -118,7 +134,7 @@ export class GoogleAdsProvider {
   async campaignReport(input: { campaignId?: string; dateRange: string }) {
     return this.call("campaign_report", async () => {
       if (this.isLiveMode()) {
-        return this.live().campaignReport(input);
+        return (await this.live()).campaignReport(input);
       }
       if (input.campaignId && !this.store().getCampaign(input.campaignId)) {
         throw new AppError({
@@ -133,20 +149,20 @@ export class GoogleAdsProvider {
   async searchKeywords(query: string, limit: number) {
     return this.call("search_keywords", async () =>
       this.isLiveMode()
-        ? this.live().searchKeywords(query, limit)
+        ? (await this.live()).searchKeywords(query, limit)
         : this.store().searchKeywords(query, limit),
     );
   }
 
   async listCustomers() {
     return this.call("list_customers", async () =>
-      this.isLiveMode() ? this.live().listCustomers() : this.store().listCustomers(),
+      this.isLiveMode() ? (await this.live()).listCustomers() : this.store().listCustomers(),
     );
   }
 
   async accountInfo() {
     return this.call("account_info", async () =>
-      this.isLiveMode() ? this.live().accountInfo() : this.store().accountInfo(),
+      this.isLiveMode() ? (await this.live()).accountInfo() : this.store().accountInfo(),
     );
   }
 

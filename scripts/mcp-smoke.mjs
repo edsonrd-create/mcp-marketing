@@ -63,4 +63,6 @@ if (failed) {
   process.exit(1);
 }
 
-console.log("\nSmoke test passed — all MCP servers started, 52 tools registered, processes closed.");
+console.log(
+  `\nSmoke test passed — all MCP servers started, ${totalTools} tools registered, processes closed.`,
+);

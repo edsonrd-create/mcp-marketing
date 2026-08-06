@@ -15,6 +15,7 @@ import {
   listWorkflows,
   pauseWorkflow,
   recoverWorkflowExecution,
+  resumeWorkflow,
   runDueWorkflows,
   runWorkflow,
   updateWorkflow,
@@ -198,6 +199,13 @@ export function registerWorkflowsTools(server: McpServer, ctx: WorkflowsToolsCon
     },
   );
 
+  const runWorkflowHandler = async ({ workflowId }: { workflowId: string }) => {
+    const store = await getStore();
+    const execution = runWorkflow(store, workflowId);
+    await saveStore(store);
+    return { execution };
+  };
+
   registerTool(
     server,
     "run_workflow",
@@ -208,10 +216,40 @@ export function registerWorkflowsTools(server: McpServer, ctx: WorkflowsToolsCon
       },
     },
     async ({ workflowId }) => {
+      const result = await runWorkflowHandler({ workflowId });
+      return { tool: "run_workflow", ...result };
+    },
+  );
+
+  registerTool(
+    server,
+    "execute_workflow",
+    {
+      description: "Execute a workflow immediately (alias of run_workflow)",
+      inputSchema: {
+        workflowId: z.string(),
+      },
+    },
+    async ({ workflowId }) => {
+      const result = await runWorkflowHandler({ workflowId });
+      return { tool: "execute_workflow", ...result };
+    },
+  );
+
+  registerTool(
+    server,
+    "resume_workflow",
+    {
+      description: "Resume a paused workflow (set status back to active)",
+      inputSchema: {
+        workflowId: z.string(),
+      },
+    },
+    async ({ workflowId }) => {
       const store = await getStore();
-      const execution = runWorkflow(store, workflowId);
+      const workflow = resumeWorkflow(store, workflowId);
       await saveStore(store);
-      return { tool: "run_workflow", execution };
+      return { tool: "resume_workflow", workflow };
     },
   );
 
