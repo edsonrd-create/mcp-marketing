@@ -73,7 +73,7 @@ Full template without secrets: [`docs/mcp-config.example.json`](mcp-config.examp
 ## Verify
 
 1. Restart Cursor / reload MCP servers.
-2. Confirm **52 tools** across the six servers.
+2. Confirm **71 tools** across the six servers.
 3. Local harness (no live credentials required for structure + stub):
 
 ```bash

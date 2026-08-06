@@ -46,12 +46,49 @@ function cpa(snapshot: CampaignSnapshot): number {
   return snapshot.conversions > 0 ? snapshot.spend / snapshot.conversions : 0;
 }
 
+function cpc(snapshot: CampaignSnapshot): number {
+  return snapshot.clicks > 0 ? snapshot.spend / snapshot.clicks : 0;
+}
+
+export interface CampaignMetrics {
+  campaignId: string;
+  name: string;
+  spend: number;
+  impressions: number;
+  clicks: number;
+  conversions: number;
+  revenue: number;
+  ctr: number;
+  cvr: number;
+  roas: number;
+  cpa: number;
+  cpc: number;
+}
+
+export function computeCampaignMetrics(snapshot: CampaignSnapshot): CampaignMetrics {
+  return {
+    campaignId: snapshot.campaignId,
+    name: snapshot.name,
+    spend: snapshot.spend,
+    impressions: snapshot.impressions,
+    clicks: snapshot.clicks,
+    conversions: snapshot.conversions,
+    revenue: snapshot.revenue,
+    ctr: ctr(snapshot),
+    cvr: cvr(snapshot),
+    roas: roas(snapshot),
+    cpa: cpa(snapshot),
+    cpc: cpc(snapshot),
+  };
+}
+
 export function analyzeCampaignSnapshot(snapshot: CampaignSnapshot): Insight[] {
   const insights: Insight[] = [];
   const clickRate = ctr(snapshot);
   const conversionRate = cvr(snapshot);
   const returnOnAdSpend = roas(snapshot);
   const costPerAcquisition = cpa(snapshot);
+  const costPerClick = cpc(snapshot);
 
   if (clickRate < 0.01) {
     insights.push({
@@ -104,6 +141,19 @@ export function analyzeCampaignSnapshot(snapshot: CampaignSnapshot): Insight[] {
       metric: "roas",
       value: returnOnAdSpend,
       recommendation: "Consider scaling budget incrementally.",
+    });
+  }
+
+  if (costPerClick > 0 && snapshot.clicks > 50) {
+    insights.push({
+      id: randomUUID(),
+      severity: "info",
+      category: "efficiency",
+      title: "Cost per click tracked",
+      description: `CPC is ${costPerClick.toFixed(2)} with ${snapshot.clicks} clicks.`,
+      campaignId: snapshot.campaignId,
+      metric: "cpc",
+      value: costPerClick,
     });
   }
 
@@ -191,6 +241,7 @@ export function getExecutiveDashboard(snapshots: CampaignSnapshot[]) {
   const totalSpend = snapshots.reduce((sum, s) => sum + s.spend, 0);
   const totalRevenue = snapshots.reduce((sum, s) => sum + s.revenue, 0);
   const totalConversions = snapshots.reduce((sum, s) => sum + s.conversions, 0);
+  const totalClicks = snapshots.reduce((sum, s) => sum + s.clicks, 0);
   const healthScores = getHealthScores(snapshots);
   const avgHealth =
     healthScores.length > 0
@@ -203,9 +254,16 @@ export function getExecutiveDashboard(snapshots: CampaignSnapshot[]) {
       totalSpend,
       totalRevenue,
       totalConversions,
+      totalClicks,
       overallRoas: totalSpend > 0 ? totalRevenue / totalSpend : 0,
+      overallCpa: totalConversions > 0 ? totalSpend / totalConversions : 0,
+      overallCtr: snapshots.reduce((sum, s) => sum + s.impressions, 0) > 0
+        ? totalClicks / snapshots.reduce((sum, s) => sum + s.impressions, 0)
+        : 0,
+      overallCpc: totalClicks > 0 ? totalSpend / totalClicks : 0,
       averageHealthScore: avgHealth,
     },
+    metrics: snapshots.map(computeCampaignMetrics),
     topPerformers: [...healthScores].sort((a, b) => b.score - a.score).slice(0, 3),
     criticalInsights: analyzeInsights(snapshots).filter((i) => i.severity === "critical"),
     generatedAt: new Date().toISOString(),
@@ -239,6 +297,7 @@ export function generateReport(snapshots: CampaignSnapshot[], events: TimelineEv
     generatedAt: new Date().toISOString(),
     dashboard: getExecutiveDashboard(snapshots),
     healthCenter: getHealthCenter(snapshots),
+    metrics: snapshots.map(computeCampaignMetrics),
     insights: analyzeInsights(snapshots),
     recommendations: listRecommendations(snapshots),
     timeline: events.slice(-20),
