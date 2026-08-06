@@ -42,7 +42,7 @@ npm run mcp:smoke
 npm run mcp:tools
 ```
 
-These scripts start all six MCP servers over stdio, confirm **52 tools**, and write `MCP_TOOLS_REPORT.md`.
+These scripts start all six MCP servers over stdio, confirm **71 tools**, and write `MCP_TOOLS_REPORT.md`.
 
 ## Recommendation
 

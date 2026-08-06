@@ -151,8 +151,9 @@ export class GoogleAdsAuthManager {
 
       return credentials.access_token;
     } catch (error) {
+      const errMessage = error instanceof Error ? error.message : "unknown error";
       logger.error(
-        { err: error, customerId: this.getCustomerId() },
+        { customerId: this.getCustomerId(), errMessage },
         "Google Ads OAuth refresh failed",
       );
       if (error instanceof AppError) {

@@ -2,6 +2,7 @@ import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
 import type { z } from "zod";
 import { structuredResult, wrapToolError, type TextToolResult } from "./tool-result.js";
+import { withToolExecutionLogging } from "./tool-logging.js";
 
 type ZodRawShape = Record<string, z.ZodTypeAny>;
 
@@ -22,17 +23,18 @@ export function registerTool<T extends ZodRawShape>(
   config: ToolConfig<T>,
   handler: (args: InferShape<T>) => Promise<ToolHandlerResult>,
 ): void {
-  const wrapped = async (args: InferShape<T>): Promise<CallToolResult> => {
-    try {
-      const result = await handler(args);
-      if (result && typeof result === "object" && "content" in result) {
-        return result as CallToolResult;
+  const wrapped = async (args: InferShape<T>): Promise<CallToolResult> =>
+    withToolExecutionLogging(name, async () => {
+      try {
+        const result = await handler(args);
+        if (result && typeof result === "object" && "content" in result) {
+          return result as CallToolResult;
+        }
+        return structuredResult(result as Record<string, unknown>) as CallToolResult;
+      } catch (error) {
+        return wrapToolError(error) as CallToolResult;
       }
-      return structuredResult(result as Record<string, unknown>) as CallToolResult;
-    } catch (error) {
-      return wrapToolError(error) as CallToolResult;
-    }
-  };
+    });
 
   server.registerTool(
     name,

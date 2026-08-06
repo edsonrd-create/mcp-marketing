@@ -11,6 +11,7 @@ export {
 export {
   LoggerFactory,
   createLogger,
+  createStdioSafeLogger,
   type LogLevel,
   type Logger,
   type LoggerFactoryOptions,
@@ -37,6 +38,20 @@ export {
   type ToolHandler,
 } from "./mcp/tool-result.js";
 export { registerTool, type ToolConfig, type ToolHandlerResult } from "./mcp/registerTool.js";
+export {
+  logToolExecution,
+  withToolExecutionLogging,
+} from "./mcp/tool-logging.js";
+export {
+  connectStdioMcpServer,
+  formatMcpServerHealth,
+  getMcpRegistrationCounts,
+  getMcpServerHealth,
+  mcpStartupLog,
+  type ConnectStdioMcpServerOptions,
+  type McpRegistrationCounts,
+  type McpServerHealth,
+} from "./mcp/stdio-startup.js";
 export {
   createDatabase,
   MemoryDatabase,

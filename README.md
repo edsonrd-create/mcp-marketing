@@ -1,137 +1,149 @@
-# Marketing Brain v1.1.0 LTS
+# Marketing Brain v1.0.0 — Production Ready
 
-Plataforma MCP instalável para marketing digital: **Google Ads**, **Meta Ads**, **WhatsApp**, **Insights**, **AI Agent** e **Workflows**.
+Plataforma MCP para marketing digital: **Google Ads**, **Meta Ads**, **WhatsApp**, **Insights**, **AI Agent** e **Workflows**.
 
-Stack: Node.js · TypeScript · MCP SDK · Fastify · Google Ads API · OpenAI · Pino · Zod
+Stack: Node.js ≥22 · TypeScript · MCP SDK · Fastify · Google Ads API · OpenAI · Pino · Zod
 
 ## Instalação
 
 ```bash
 npm install
-cp .env.example .env   # preencha credenciais conforme necessário
+cp .env.example .env
 npm run build
 ```
-
-## Configuração
-
-Variáveis em `.env` — validadas automaticamente por `EnvValidator` / `ConfigService`.
-
-Detalhes: [docs/CONFIGURATION.md](docs/CONFIGURATION.md)
 
 ```bash
 npm run doctor
+npm run mcp:smoke
+npm run mcp:client
 ```
 
-## Desenvolvimento
+## Como executar
 
-Sobe o shell HTTP (Fastify) com logs estruturados (Pino):
+Os servidores MCP usam **`StdioServerTransport`**:
+
+- **Não abrem porta HTTP**
+- Ficam à espera de um **cliente MCP** no stdin/stdout
+- Logs de arranque (health, tools, “aguardando conexão”) vão para **stderr**
+- Se o terminal “parecer parado” depois do health, **é o comportamento esperado**
 
 ```bash
-npm run dev
+npm run doctor          # diagnóstico (sem conectar MCP)
+npm run dev             # Google Ads MCP (mock) + logs de arranque
+npm run dev:meta        # Meta Ads
+npm run dev:whatsapp    # WhatsApp stub
+npm run dev:app         # Shell HTTP Fastify (separado do MCP)
 ```
 
-Endpoints:
+Ao correr `npm run dev` deverá ver algo como:
 
-- `GET /` — info
-- `GET /health` — status dos serviços
-- `GET /ready` — readiness (MCP dist)
+```text
+🚀 Marketing Brain MCP iniciando... (mcp-google-ads)
+📦 Registrando Tools... (10)
+🧠 Registrando Prompts... (0)
+📚 Registrando Resources... (0)
+🩺 Health
+   • Nome: mcp-google-ads
+   • Versão: 1.0.0
+   • Tools: 10
+   • Prompts: 0
+   • Resources: 0
+🔌 Aguardando conexão de um cliente MCP via STDIO...
+✅ Cliente MCP conectado.
+```
 
-Produção / build local:
+### Cursor
+
+1. `npm run build`
+2. Copie `.cursor/mcp.json.example` → `.cursor/mcp.json` (ajuste o caminho absoluto da raiz)
+3. Settings → MCP → reload
+4. Confirme servers/tools e chame p.ex. `list_campaigns`
+
+Exemplo mínimo (Google Ads mock):
+
+```json
+{
+  "mcpServers": {
+    "mcp-google-ads": {
+      "command": "node",
+      "args": ["/ABSOLUTE/PATH/mcp-marketing/mcp-google-ads/dist/index.js"],
+      "env": {
+        "MCP_STDIO_SAFE": "true",
+        "GOOGLE_ADS_CLIENT_ID": "dev",
+        "GOOGLE_ADS_CLIENT_SECRET": "dev",
+        "GOOGLE_ADS_REFRESH_TOKEN": "dev",
+        "GOOGLE_ADS_DEVELOPER_TOKEN": "dev",
+        "GOOGLE_ADS_CUSTOMER_ID": "1234567890",
+        "GOOGLE_ADS_SKIP_AUTH_VALIDATE": "true",
+        "GOOGLE_ADS_FORCE_MOCK": "true",
+        "GOOGLE_ADS_LIVE_AUTH": "0"
+      }
+    }
+  }
+}
+```
+
+Guia: [docs/cursor.md](docs/cursor.md) · template: [docs/mcp-config.example.json](docs/mcp-config.example.json)
+
+### Claude Desktop
+
+1. Edite `claude_desktop_config.json` (macOS: `~/Library/Application Support/Claude/`)
+2. Use `command: "node"` + `args` apontando para `mcp-*/dist/...` + `env` mock ou live
+3. Reinicie o Claude Desktop
+
+Guia: [docs/claude.md](docs/claude.md)
+
+### MCP Inspector
 
 ```bash
-npm run build
-npm start
+npx @modelcontextprotocol/inspector node ./mcp-google-ads/dist/index.js
 ```
 
-## Scripts
+Working directory = raiz do repo. Guia: [docs/MCP_INSPECTOR.md](docs/MCP_INSPECTOR.md)
+
+## Como testar uma Tool
+
+```bash
+# Handshake + 1 call por servidor
+npm run mcp:client
+
+# Todas as tools
+npm run mcp:tools
+
+# Autodescoberta (schemas)
+npm run mcp:discover
+```
+
+No Cursor/Claude/Inspector: chame `list_campaigns` (Google/Meta) ou `list_templates` (WhatsApp stub).
+
+## Scripts MCP
 
 | Script | Descrição |
 |--------|-----------|
-| `npm run build` | Shared + MCP packages + app (`src/`) |
-| `npm run dev` | Fastify em watch (`tsx`) |
-| `npm start` | App compilada (`dist-app/`) |
-| `npm run typecheck` | TypeScript (workspaces + app) |
-| `npm run lint` | ESLint |
-| `npm test` | Testes dos workspaces |
-| `npm run doctor` | Diagnóstico do ambiente |
-| `npm run test:google` | Testes do provider Google Ads (10/10 tools) |
-| `npm run validate:google` | Validação do provider Google Ads |
-| `npm run mcp:smoke` | Smoke MCP stdio (52 tools) |
-| `npm run mcp:tools` | Chamadas de teste + `MCP_TOOLS_REPORT.md` |
+| `mcp:smoke` | Init + listTools (**71**) |
+| `mcp:client` | Handshake + 1 tool / server |
+| `mcp:discover` | Catálogo + schemas → `MCP_DISCOVERY_REPORT.md` |
+| `mcp:tools` | callTool em todas → `MCP_TOOLS_REPORT.md` |
+| `doctor` | Diagnóstico sem cliente |
+| `validate:google` / `validate:meta` | Providers (mock) |
 
-Scripts por servidor MCP mantidos: `dev:google`, `start:meta`, etc.
-
-## Estrutura do projeto
-
-```text
-src/                         # Shell HTTP / base da aplicação
-├── config/                  # ConfigService, EnvValidator
-├── core/                    # bootstrap, Fastify app
-├── logger/                  # LoggerFactory (Pino)
-├── providers/
-│   └── google-ads/          # Provider MCP completo (Sprint 2)
-├── routes/                  # health, ready
-├── services/
-│   ├── google-ads/
-│   ├── openai/
-│   └── mcp/
-├── tools/
-├── schemas/
-├── scripts/
-├── utils/
-├── types/
-└── index.ts
-
-shared/                      # libs compartilhadas (erros, logger, MCP helpers)
-mcp-*/                       # servidores MCP (stdio) — 52 tools
-packages/cli/                # CLI marketing-brain
-docs/                        # documentação
-```
-
-Arquitetura MCP stdio **não muda**: os pacotes `mcp-*` continuam sendo os servidores de tools.
-
-## Integração MCP (clientes)
-
-| Cliente | Guia |
-|---------|------|
-| Cursor | [docs/cursor.md](docs/cursor.md) |
-| Claude Desktop | [docs/claude.md](docs/claude.md) |
-| ChatGPT Desktop | [docs/chatgpt.md](docs/chatgpt.md) |
-
-Template: [docs/mcp-config.example.json](docs/mcp-config.example.json)
-
-## MCP Servers (52 tools)
+## MCP Servers (71 tools)
 
 | Servidor | Pacote | Tools |
 |----------|--------|------:|
 | Google Ads | `@mcp-marketing/google-ads` | 10 |
-| Meta Ads | `@mcp-marketing/meta-ads` | 8 |
-| WhatsApp | `@mcp-marketing/whatsapp` | 6 |
+| Meta Ads | `@mcp-marketing/meta-ads` | 14 |
+| WhatsApp | `@mcp-marketing/whatsapp` | 10 |
 | Insights | `@mcp-marketing/insights` | 8 |
-| AI Agent | `@mcp-marketing/ai-agent` | 7 |
-| Workflows | `@mcp-marketing/workflows` | 13 |
+| AI Agent | `@mcp-marketing/ai-agent` | 14 |
+| Workflows | `@mcp-marketing/workflows` | 15 |
 
-## Google Ads (provider completo)
+## Relatórios de integração
 
-Guia: [docs/GOOGLE_ADS.md](docs/GOOGLE_ADS.md)
-
-```bash
-# mock / CI
-npm run test:google
-npm run validate:google
-
-# conta real (sem alterar código)
-# preencha GOOGLE_ADS_* no .env e:
-GOOGLE_ADS_LIVE_AUTH=1 npm run start:google
-```
-
-## Documentação
-
-- [docs/QUICKSTART.md](docs/QUICKSTART.md)
-- [docs/CLI.md](docs/CLI.md)
-- [docs/CONFIGURATION.md](docs/CONFIGURATION.md)
-- [docs/GOOGLE_ADS.md](docs/GOOGLE_ADS.md)
-- [docs/DOCKER.md](docs/DOCKER.md)
+- [MCP_CONNECTION_REPORT.md](MCP_CONNECTION_REPORT.md)
+- [MCP_TOOLS_REPORT.md](MCP_TOOLS_REPORT.md)
+- [MCP_DISCOVERY_REPORT.md](MCP_DISCOVERY_REPORT.md)
+- [CLIENT_COMPATIBILITY_REPORT.md](CLIENT_COMPATIBILITY_REPORT.md)
 
 ## Licença
 

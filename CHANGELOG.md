@@ -1,24 +1,20 @@
 # Changelog
 
-## [1.1.0] - 2026-08-03 — LTS
+## [1.0.0] - 2026-08-04 — Final Release (Production Ready)
 
-### Added
-- Marketing Brain CLI (`marketing-brain`) with doctor, start, validate, live, status, update, version
-- `create-marketing-brain` project scaffolder
-- Operational scripts: build-info, package-release, system-validation, mcp-smoke, mcp-tools, live-validation, compat-init
-- Release engineering: `VERSION`, `BUILD_INFO.json`, `RELEASE_MANIFEST.json`
-- Docker: `Dockerfile`, `docker-compose.yml`, healthcheck, Docker README
-- GitHub: issue templates, PR template, CODEOWNERS, SECURITY, CONTRIBUTING, SUPPORT
-- Licensing: LICENSE, NOTICE, THIRD_PARTY_LICENSES.md
-- CI/CD: GitHub Actions for build, lint, typecheck, test, validate, and release packaging
-- Config profiles (`config/default.json`, `development.json`, `production.json`)
-- `.env.example` with Google Ads, Meta, WhatsApp, and database variables
-- Docs: QUICKSTART, CLI, CONFIGURATION, DOCKER, `LTS_CERTIFICATION.md`
+### Certified
+- Build, typecheck, lint, test, validate (**71/71**), health, doctor, mcp:smoke, mcp:tools
+- Google Ads / Meta Ads mock validation PASS
+- WhatsApp stub + tools PASS
+- Release pack: `FINAL_RELEASE_REPORT.md`, `QUALITY_REPORT.md`, `SECURITY_REPORT.md`, `TEST_REPORT.md`, `PROJECT_SUMMARY.md`, `PROJECT_STATUS.md`
 
-### MCP Servers (52 tools)
-- Google Ads (10), Meta Ads (8), WhatsApp (6), Insights (8), AI Agent (7), Workflows (13)
+### Included platform
+- 6 MCP providers · **71 tools** · Core framework · CLI · Docker · CI
+- Security: env secrets, sanitized Graph errors, validation-only HTTP details
+- Performance: lazy Google Ads live SDK
 
 ### Requirements
 - Node.js >= 22
-- TypeScript ESM monorepo
-- Cross-platform: Windows, Linux, macOS
+
+### Note
+Development closed on v1.0.0. Live Ads/Graph/WhatsApp/OpenAI remain operator credential pendencies.
