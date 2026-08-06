@@ -1,6 +1,6 @@
 {
   "name": "@mcp-marketing/whatsapp",
-  "version": "1.1.0",
+  "version": "1.0.0",
   "type": "module",
   "description": "Marketing Brain MCP — WhatsApp messaging tools",
   "main": "dist/index.js",
@@ -27,7 +27,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@mcp-marketing/shared": "1.1.0",
+    "@mcp-marketing/shared": "1.0.0",
     "@modelcontextprotocol/sdk": "^1.30.0",
     "zod": "^3.24.2"
   },

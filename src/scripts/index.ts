@@ -1,1 +1,2 @@
-export { formatDoctorBanner } from "./doctor-banner.js";
+/** App-shell scripts placeholders — CLI doctor lives in `scripts/doctor.mjs`. */
+export {};

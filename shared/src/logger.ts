@@ -6,6 +6,8 @@ export interface LoggerFactoryOptions {
   service?: string;
   level?: LogLevel;
   pretty?: boolean;
+  /** When true, write logs to stderr (required for MCP STDIO servers). */
+  stdioSafe?: boolean;
 }
 
 const isProduction = process.env.NODE_ENV === "production";
@@ -33,6 +35,7 @@ function buildPinoOptions(level: LogLevel, pretty: boolean): LoggerOptions {
       options: {
         colorize: true,
         translateTime: "SYS:standard",
+        destination: 2,
       },
     },
   };
@@ -43,7 +46,16 @@ export class LoggerFactory {
   static create(options: LoggerFactoryOptions = {}): Logger {
     const service = options.service ?? "marketing-brain";
     const level = options.level ?? ((process.env.LOG_LEVEL as LogLevel | undefined) || "info");
-    const pretty = options.pretty ?? !isProduction;
+    const stdioSafe =
+      options.stdioSafe === true ||
+      process.env.MCP_STDIO_SAFE === "true" ||
+      process.env.MCP_STDIO_SAFE === "1";
+    const pretty = stdioSafe ? false : (options.pretty ?? !isProduction);
+
+    if (stdioSafe) {
+      return pino(buildPinoOptions(level, false), pino.destination(2)).child({ service });
+    }
+
     return pino(buildPinoOptions(level, pretty)).child({ service });
   }
 
@@ -66,6 +78,10 @@ export class LoggerFactory {
 
 export function createLogger(service: string, level: LogLevel = "info"): Logger {
   return LoggerFactory.create({ service, level });
+}
+
+export function createStdioSafeLogger(service: string, level: LogLevel = "info"): Logger {
+  return LoggerFactory.create({ service, level, stdioSafe: true });
 }
 
 export type { Logger };

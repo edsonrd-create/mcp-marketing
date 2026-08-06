@@ -1,5 +1,6 @@
 import { GoogleAdsApi, enums, type Customer as GoogleAdsCustomer } from "google-ads-api";
 import { AppError, ErrorCode, ExternalApiError, createLogger } from "@mcp-marketing/shared";
+import { withRetry } from "../../../utils/retry.js";
 import type { GoogleAdsAuthManager } from "../auth/GoogleAdsAuthManager.js";
 import type {
   CampaignReportRow,
@@ -70,8 +71,10 @@ export class LiveGoogleAdsClient {
     const started = performance.now();
     logger.info({ customerId, operation }, "Google Ads API request start");
     try {
-      const customer = await this.ensureCustomer();
-      const result = await fn(customer);
+      const result = await withRetry(operation, async () => {
+        const customer = await this.ensureCustomer();
+        return fn(customer);
+      });
       logger.info(
         { customerId, operation, ms: Math.round(performance.now() - started) },
         "Google Ads API request ok",
