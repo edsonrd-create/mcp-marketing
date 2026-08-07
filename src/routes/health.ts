@@ -7,6 +7,7 @@ export async function registerHealthRoutes(app: FastifyInstance, ctx: AppContext
     const services = [
       ctx.googleAds.status(),
       ctx.openAi.status(),
+      ctx.anthropic.status(),
       ctx.mcp.status(),
     ];
     const degraded = services.some((s) => s.status !== "ok");

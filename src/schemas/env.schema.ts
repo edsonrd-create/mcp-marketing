@@ -22,6 +22,9 @@ export const appEnvSchema = z.object({
   OPENAI_API_KEY: optionalString,
   OPENAI_MODEL: z.string().default("gpt-4o-mini"),
 
+  ANTHROPIC_API_KEY: optionalString,
+  ANTHROPIC_MODEL: z.string().default("claude-3-5-sonnet-20241022"),
+
   GOOGLE_ADS_CLIENT_ID: optionalString,
   GOOGLE_ADS_CLIENT_SECRET: optionalString,
   GOOGLE_ADS_REFRESH_TOKEN: optionalString,
@@ -60,3 +63,4 @@ export const GOOGLE_ADS_REQUIRED_KEYS = [
 ] as const;
 
 export const OPENAI_REQUIRED_KEYS = ["OPENAI_API_KEY"] as const;
+export const ANTHROPIC_REQUIRED_KEYS = ["ANTHROPIC_API_KEY"] as const;

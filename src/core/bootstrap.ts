@@ -2,6 +2,7 @@ import { ConfigService } from "../config/index.js";
 import { LoggerFactory } from "../logger/index.js";
 import { createGoogleAdsService } from "../services/google-ads/index.js";
 import { createOpenAiService } from "../services/openai/index.js";
+import { createAnthropicService } from "../services/anthropic/index.js";
 import { createMcpService } from "../services/mcp/index.js";
 import { createHttpApp } from "./app.js";
 import type { AppContext } from "./context.js";
@@ -36,15 +37,17 @@ export async function bootstrap(): Promise<BootstrapResult> {
 
   const googleAds = createGoogleAdsService({ config, logger });
   const openAi = createOpenAiService({ config, logger });
+  const anthropic = createAnthropicService({ config, logger });
   const mcp = createMcpService({ config, logger });
 
-  const ctx: AppContext = { config, logger, googleAds, openAi, mcp };
+  const ctx: AppContext = { config, logger, googleAds, openAi, anthropic, mcp };
   const app = await createHttpApp(ctx);
 
   logger.info(
     {
       googleAds: googleAds.status().status,
       openai: openAi.status().status,
+      anthropic: anthropic.status().status,
       mcp: mcp.status().status,
     },
     "Services registered",
