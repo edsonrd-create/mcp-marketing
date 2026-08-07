@@ -60,6 +60,11 @@ export class EnvValidator {
       warnings.push("OpenAI incomplete: missing OPENAI_API_KEY");
     }
 
+    if (!env.ANTHROPIC_API_KEY) {
+      missingProviders.push("anthropic");
+      warnings.push("Anthropic/Claude incomplete: missing ANTHROPIC_API_KEY");
+    }
+
     if (!env.META_ACCESS_TOKEN || !env.META_AD_ACCOUNT_ID) {
       missingProviders.push("meta-ads");
       warnings.push("Meta Ads incomplete: missing META_ACCESS_TOKEN and/or META_AD_ACCOUNT_ID");

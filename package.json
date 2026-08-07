@@ -61,6 +61,7 @@
     "start:workflows": "npm run start -w @mcp-marketing/workflows"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.116.0",
     "@mcp-marketing/shared": "*",
     "@modelcontextprotocol/sdk": "^1.30.0",
     "dotenv": "^16.4.7",

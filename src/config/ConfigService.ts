@@ -84,6 +84,10 @@ export class ConfigService {
     return !this.missingProviders.includes("openai");
   }
 
+  hasAnthropic(): boolean {
+    return !this.missingProviders.includes("anthropic");
+  }
+
   mcpServers(): string[] {
     return this.profile.mcp?.servers ?? [
       "google-ads",
