@@ -20,6 +20,15 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
 
+    env:
+      CI: true
+      NODE_ENV: production
+      WHATSAPP_STUB: 'true'
+      GOOGLE_ADS_CLIENT_ID: mock-client-id
+      GOOGLE_ADS_CLIENT_SECRET: mock-client-secret
+      GOOGLE_ADS_DEVELOPER_TOKEN: mock-developer-token
+      GOOGLE_ADS_REFRESH_TOKEN: mock-refresh-token
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -27,7 +36,7 @@ jobs:
       - name: Setup Node.js 22
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: '22.x'
           cache: npm
 
       - name: Install dependencies
@@ -42,10 +51,16 @@ jobs:
       - name: Package release
         run: npm run package:release
 
+      - name: Sanitize release name
+        id: release_name
+        run: |
+          CLEAN_REF=$(echo "${{ github.ref_name }}" | tr '/' '-' | tr '\\' '-')
+          echo "clean_ref=${CLEAN_REF}" >> $GITHUB_OUTPUT
+
       - name: Upload release artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: marketing-brain-release-${{ github.ref_name }}
+          name: marketing-brain-release-${{ steps.release_name.outputs.clean_ref }}
           path: |
             dist-release/**
             VERSION

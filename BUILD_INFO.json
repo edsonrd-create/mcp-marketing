@@ -1,7 +1,7 @@
 {
   "version": "1.1.0",
-  "commit": "75ae2de57f43437bacfc101771336dc8928cde8c",
-  "date": "2026-08-03T21:50:00.857Z",
+  "commit": "edbe9cd03131020509e597c5f4292ec712b05164",
+  "date": "2026-08-07T00:22:37.225Z",
   "node": "v22.14.0",
   "npm": "10.9.7",
   "platform": "linux-x64",
@@ -17,5 +17,5 @@
     "@mcp-marketing/create-marketing-brain"
   ],
   "toolsCount": 52,
-  "testsCount": 36
+  "testsCount": 52
 }
