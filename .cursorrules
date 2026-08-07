@@ -1,0 +1,4 @@
+Regras do Projeto:
+- Ambiente: Node.js 22 LTS e GitHub Actions v4.
+- Sempre garanta que o arquivo package-lock.json esteja atualizado.
+- Escreva código modular, tipado e com tratamento de erros robusto.
