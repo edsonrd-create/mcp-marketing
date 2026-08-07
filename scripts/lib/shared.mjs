@@ -234,7 +234,10 @@ export function buildWorkspaceStatus() {
   return ALL_WORKSPACES.map((ws) => {
     const pkg = readWorkspacePackage(ws.dir);
     const exists = Boolean(pkg);
-    const distExists = existsSync(join(ROOT, ws.dir, "dist"));
+    const distExists =
+      existsSync(join(ROOT, ws.dir, "dist")) ||
+      existsSync(join(ROOT, ws.dir, "bin")) ||
+      existsSync(join(ROOT, ws.dir, "lib"));
     return {
       dir: ws.dir,
       name: ws.name,
