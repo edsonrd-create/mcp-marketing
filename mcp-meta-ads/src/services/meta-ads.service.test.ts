@@ -1,73 +1,29 @@
-import { beforeEach, describe, expect, it } from "vitest";
-import { MetaAdsService } from "./meta-ads.service.js";
+import { describe, expect, it } from "vitest";
+import { createMetaAdsModule } from "../../../src/providers/meta-ads/index.js";
 
-describe("MetaAdsService", () => {
-  let service: MetaAdsService;
+describe("MetaAdsService (package)", () => {
+  it("lists and mutates campaigns via provider module", async () => {
+    const module = await createMetaAdsModule({
+      META_ACCESS_TOKEN: "pkg-token",
+      META_AD_ACCOUNT_ID: "act_999",
+      META_SKIP_AUTH_VALIDATE: true,
+      META_FORCE_MOCK: true,
+    });
 
-  beforeEach(() => {
-    service = new MetaAdsService({ adAccountId: "act_123456789" });
-  });
-
-  it("lists seeded campaigns", async () => {
-    const campaigns = await service.listCampaigns();
+    const campaigns = await module.provider.listCampaigns();
     expect(campaigns.length).toBeGreaterThanOrEqual(2);
-  });
 
-  it("creates a campaign", async () => {
-    const campaign = await service.createCampaign({
-      name: "Launch",
-      objective: "OUTCOME_AWARENESS",
-      dailyBudget: 50,
-    });
-
-    expect(campaign.status).toBe("ACTIVE");
-    expect(campaign.name).toBe("Launch");
-  });
-
-  it("pauses and resumes a campaign", async () => {
-    const created = await service.createCampaign({
-      name: "Toggle",
+    const created = await module.provider.createCampaign({
+      name: "Package Test",
       objective: "OUTCOME_TRAFFIC",
-      dailyBudget: 30,
+      dailyBudget: 25,
     });
+    expect(created.status).toBe("ACTIVE");
 
-    const paused = await service.pauseCampaign(created.id);
+    const paused = await module.provider.pauseCampaign(created.id);
     expect(paused.status).toBe("PAUSED");
 
-    const resumed = await service.resumeCampaign(created.id);
-    expect(resumed.status).toBe("ACTIVE");
-  });
-
-  it("updates budget", async () => {
-    const created = await service.createCampaign({
-      name: "Budget",
-      objective: "OUTCOME_SALES",
-      dailyBudget: 40,
-    });
-
-    const updated = await service.updateBudget(created.id, 120);
-    expect(updated.dailyBudget).toBe(120);
-  });
-
-  it("creates audience and ad", async () => {
-    const audience = await service.createAudience({ name: "Lookalike 1%" });
-    expect(audience.name).toBe("Lookalike 1%");
-
-    const campaigns = await service.listCampaigns();
-    const campaignId = campaigns[0]?.id;
-    expect(campaignId).toBeTruthy();
-
-    const ad = await service.createAd({
-      name: "Carousel Ad",
-      campaignId: campaignId!,
-      creativeBody: "Shop now",
-    });
-    expect(ad.creativeBody).toBe("Shop now");
-  });
-
-  it("returns metrics", async () => {
-    const metrics = await service.getMetrics();
-    expect(metrics.length).toBeGreaterThan(0);
-    expect(metrics[0]?.impressions).toBeGreaterThan(0);
+    const insights = await module.provider.getInsights({ campaignId: "2001" });
+    expect(insights[0]?.campaignId).toBe("2001");
   });
 });

@@ -54,14 +54,20 @@ function buildToolPlan(pkg) {
       { name: "account_info", arguments: {} },
     ],
     "@mcp-marketing/meta-ads": () => [
+      { name: "list_accounts", arguments: {} },
       { name: "list_campaigns", arguments: {} },
+      { name: "get_campaign", arguments: { campaign_id: "2001" } },
       {
         name: "create_campaign",
         arguments: { name: "Meta Smoke", objective: "OUTCOME_TRAFFIC", daily_budget: 50 },
       },
       { name: "pause_campaign", arguments: { campaign_id: "2001" } },
+      { name: "enable_campaign", arguments: { campaign_id: "2001" } },
       { name: "resume_campaign", arguments: { campaign_id: "2001" } },
       { name: "update_budget", arguments: { campaign_id: "2001", daily_budget: 80 } },
+      { name: "get_insights", arguments: { campaign_id: "2001" } },
+      { name: "list_audiences", arguments: {} },
+      { name: "account_info", arguments: {} },
       {
         name: "create_audience",
         arguments: { name: "Smoke Audience", subtype: "CUSTOM", approximate_count: 1000 },
@@ -79,6 +85,10 @@ function buildToolPlan(pkg) {
     "@mcp-marketing/whatsapp": () => [
       {
         name: "send_birthday_message",
+        arguments: { to: "+5511999999999", name: "Smoke User", couponCode: "SMOKE10" },
+      },
+      {
+        name: "send_birthday",
         arguments: { to: "+5511999999999", name: "Smoke User", couponCode: "SMOKE10" },
       },
       {
@@ -118,6 +128,16 @@ function buildToolPlan(pkg) {
           items: ["Item A"],
         },
       },
+      { name: "list_templates", arguments: {} },
+      { name: "get_message_status", arguments: { messageId: "stub_missing" } },
+      {
+        name: "validate_webhook",
+        arguments: {
+          mode: "subscribe",
+          verifyToken: "test-verify-token",
+          challenge: "12345",
+        },
+      },
     ],
     "@mcp-marketing/insights": () => [
       {
@@ -150,6 +170,16 @@ function buildToolPlan(pkg) {
       { name: "get_agent_history", arguments: { sessionId: "smoke-session", limit: 20 } },
       { name: "get_ai_summary", arguments: {} },
       { name: "list_audit_logs", arguments: { limit: 20 } },
+      { name: "analyze_campaigns", arguments: {} },
+      { name: "optimize_budget", arguments: { totalBudget: 10000 } },
+      { name: "generate_report", arguments: {} },
+      { name: "analyze_customers", arguments: {} },
+      { name: "suggest_actions", arguments: { limit: 5 } },
+      { name: "summarize_account", arguments: {} },
+      {
+        name: "marketing_chat",
+        arguments: { message: "What is my account ROAS?", sessionId: "smoke-marketing" },
+      },
       // confirm/cancel filled dynamically after pending list
     ],
     "@mcp-marketing/workflows": () => [
@@ -258,7 +288,7 @@ for (const target of targets) {
               }
             }
           }
-          if (call.name === "run_workflow") {
+          if (call.name === "run_workflow" || call.name === "execute_workflow") {
             const parsed = parseJsonFromResult(result);
             if (parsed?.execution?.id) {
               ctx.executionId = parsed.execution.id;
@@ -350,7 +380,9 @@ for (const target of targets) {
           },
           { name: "duplicate_workflow", arguments: { workflowId } },
           { name: "run_workflow", arguments: { workflowId } },
+          { name: "execute_workflow", arguments: { workflowId } },
           { name: "pause_workflow", arguments: { workflowId } },
+          { name: "resume_workflow", arguments: { workflowId } },
           {
             name: "recover_workflow_execution",
             arguments: { executionId: "nonexistent-execution" },
